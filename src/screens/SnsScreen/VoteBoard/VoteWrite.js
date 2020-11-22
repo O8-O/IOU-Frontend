@@ -9,13 +9,12 @@ export default class VoteWrite extends React.Component{
         this.state={
             title:"",
             contentText:"",
-            imgFile : require('../../../../assets/img/addPicture.png'),
-            img2 : require('../../../../assets/img/addPicture.png'),
-            //sendingImg:"",
+            imgFile1 : require('../../../../assets/img/addPicture.png'),
+            imgFile2 : require('../../../../assets/img/addPicture.png'),
         };
     }
 
-    showPicker=()=>{
+    showPicker1=()=>{
         const options= {
             title:'사진 선택하기', //다이얼로그의 제목
             takePhotoButtonTitle: '카메라 실행하기',
@@ -29,45 +28,48 @@ export default class VoteWrite extends React.Component{
                 alert('사진 선택을 취소했습니다');
             }
             else{
-                //const path = {uri: response.uir}; //갤러리 사진 uri를 this의 img에 넘겨주기
                 const uri = {uri: response.uri};
-                this.setState({imgFile:uri}); 
+                this.setState({imgFile1:uri}); 
                 const path = {uri: response.path};
                 this.setState({sendImg:path});
             }
         });
- 
     }
-    callNWSendFreePost(){
-        
-        if(this.state.imgFile == require('../../../../assets/img/addPicture.png')){
-            //이미지가 없는 게시물이라면
-            console.log('이미지 없어서 바꿀게')
-            this.setState({imgFile:null})
-            return Network.sendFreePostNoPic(this.state.title,this.state.contentText)
-            .then((resp)=>{
-                console.log('callNWSendFreePost 완료')
-                console.log(resp)
-            })
-            .catch((err)=>{
-                console.log('callNWSendFreePost 에러')
-                console.log(err)
-            })
-        }
-        else{ //이미지가 있는 게시물이라면
-            console.log('보내려는 이미지는')
-            console.log(this.state.imgFile)
-            return Network.sendFreePost(this.state.title,this.state.contentText,this.state.imgFile)
-            .then((resp)=>{
-                console.log('callNWSendFreePost 완료')
-                console.log(resp)
-            })
-            .catch((err)=>{
-                console.log('callNWSendFreePost 에러')
-                console.log(err)
-            })
-        }
-        
+
+    showPicker2=()=>{
+        const options= {
+            title:'사진 선택하기', //다이얼로그의 제목
+            takePhotoButtonTitle: '카메라 실행하기',
+            chooseFromLibraryButtonTitle:'갤러리에서 이미지 선택',
+            cancelButtonTitle: '취소',
+        };
+ 
+        //위에서 만든 옵션을 기준으로 다이얼로그 보이기 
+        ImagePicker.showImagePicker(options, (response)=>{
+            if(response.didCancel){
+                alert('사진 선택을 취소했습니다');
+            }
+            else{
+                const uri = {uri: response.uri};
+                this.setState({imgFile2:uri}); 
+                const path = {uri: response.path};
+                this.setState({sendImg:path});
+            }
+        });
+    }
+
+    callNWSendFreePost(){  
+        console.log('보내려는 이미지는')
+        console.log(this.state.imgFile)
+        return Network.sendFreePost(this.state.title,this.state.contentText,this.state.imgFile)
+        .then((resp)=>{
+            console.log('callNWSendFreePost 완료')
+            console.log(resp)
+        })
+        .catch((err)=>{
+            console.log('callNWSendFreePost 에러')
+            console.log(err)
+        })
     }
 
     doneButton(){
@@ -126,11 +128,19 @@ export default class VoteWrite extends React.Component{
                         <View
                             Style={{flexDirection:'row'}}>
                             <TouchableOpacity //사진 추가
-                                onPress={this.showPicker}
+                                onPress={this.showPicker1}
+                                style={{width:190,backgroundColor:'pink'}}>
+                                <Image 
+                                    style={{marginTop:2, width:182.7, height:110.25,resizeMode:'contain'}}
+                                    source={this.state.imgFile1}/>
+                                    
+                            </TouchableOpacity>
+                            <TouchableOpacity //사진 추가
+                                onPress={this.showPicker2}
                                 style={{width:190}}>
                                 <Image 
                                     style={{marginTop:2, width:182.7, height:110.25,resizeMode:'contain'}}
-                                    source={this.state.imgFile}/>
+                                    source={this.state.imgFile2}/>
                                     
                             </TouchableOpacity>
                         </View>

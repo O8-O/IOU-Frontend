@@ -7,8 +7,10 @@ export default class VotePosting extends React.Component{
         super(props);
         this.state={
             data : this.props.item,
-            pictureFlag:false,
-            picForDetail:null,
+            pictureFlag1:false,
+            pictureFlag2:false,
+            picForDetail1:null,
+            picForDetail2:null,
         };
     }
     pressLikeButton(){
@@ -40,15 +42,28 @@ export default class VotePosting extends React.Component{
         
 
     }
-    numToImg(num){
+    numToImg1(num){
         console.log('num 은 : '+num)
         return Network.numToImg(num)
         .then((resp)=>{
             console.log('res.url 은 : ')
             console.log(resp.url)
-            this.setState({picForDetail : resp.url}) //data.contentImage 에 넣어야 함.
-            
-            this.setState({pictureFlag:true})
+            this.setState({picForDetail1 : resp.url}) //data.contentImage 에 넣어야 함.
+            this.setState({pictureFlag1:true})
+        })
+        .catch((err)=>{
+            console.log("callNumToInt 에러!!");
+            console.log(err);
+        })
+    }
+    numToImg2(num){
+        console.log('num 은 : '+num)
+        return Network.numToImg(num)
+        .then((resp)=>{
+            console.log('res.url 은 : ')
+            console.log(resp.url)
+            this.setState({picForDetail2 : resp.url}) //data.contentImage 에 넣어야 함.
+            this.setState({pictureFlag2:true})
         })
         .catch((err)=>{
             console.log("callNumToInt 에러!!");
@@ -57,26 +72,28 @@ export default class VotePosting extends React.Component{
     }
 
     pictureSpace(){
-        if(this.state.pictureFlag){
-                if((this.state.data.contentImage == null)){
-                return <View/>
-            }
-            else{
-                console.log('pictureSpace 그리게 될 최동 이미지는')
-                console.log(this.state.picForDetail)
-                return(
+        if(this.state.pictureFlag1 &&this.state.pictureFlag1){
+            console.log('vote/pictureSpace 그리게 될 최동 이미지는')
+            console.log(this.state.picForDetail1)
+            return(
+                <View style={{flexDirection:'row'}}>
                     <Image
-                        style={{width:290, height:150, /*resizeMode:'contain'*/}}
-                        source={{uri : this.state.picForDetail}}
+                        style={{width:150, height:150, /*resizeMode:'contain'*/}}
+                        source={{uri : this.state.picForDetail1}}
                     />
-                )
-            }
+                    <Image
+                        style={{marginLeft:5, width:150, height:150, /*resizeMode:'contain'*/}}
+                        source={{uri : this.state.picForDetail2}}
+                    />
+                </View>
+                
+            )
         }
     }
 
     componentDidMount(){
-        if(this.state.data.contentImage != null)
-            this.numToImg(this.state.data.contentImage)
+        this.numToImg1(this.state.data.contentImage1);
+        this.numToImg2(this.state.data.contentImage2);
     }
 
 
@@ -90,7 +107,8 @@ export default class VotePosting extends React.Component{
                 style={styles.container}
                 onPress = {()=>
                     this.props.navigate.navigate("VotePostDetail",
-                    { navigate :this.props.navigation, data:this.state.data,img:this.state.picForDetail})}//{(data)=>this.props.onPress(data)}
+                    { navigate :this.props.navigation, data:this.state.data,
+                        img1:this.state.picForDetail1,img2:this.state.picForDetail2})}//{(data)=>this.props.onPress(data)}
                 >
                 <View //사용자 + 사진 
                     style={{flexDirection: 'row',alignItems:'center'}}>

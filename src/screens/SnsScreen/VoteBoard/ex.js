@@ -16,7 +16,6 @@ export default class VoteDetail extends React.Component{
             this.setState({voted:true})
             //서버로 번호 결과 전송
         }
-        
     }
     /*서버에서 받을 것
        user, userPIcture, title, picture, heartNumber, commentNumber*/

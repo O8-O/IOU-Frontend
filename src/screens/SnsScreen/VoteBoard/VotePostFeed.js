@@ -43,7 +43,7 @@ export default class VotePostFeed extends React.Component{
             console.log("Vote board의 post feed는 성공")
             console.log(res.result)
             this.setState({data: res.result});
-            //this.setState({data : this.state.data.reverse()})
+            this.setState({data : this.state.data.reverse()})
         })
         .catch(err=>{
             console.log("Vote board1에서 에러났엉")

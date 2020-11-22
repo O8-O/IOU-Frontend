@@ -38,8 +38,23 @@ class _Network {
     getVoteBoardPosts(){
         this.option.method='post';
         this.option.body={}
-        //return this.fetchWrapper(this.link+'/vote_board/show_all',this.option)
-        return this.fetchWrapper(this.link+'/free_board/show_all',this.option)
+        return this.fetchWrapper(this.link+'/vote_board/show_all',this.option)
+    }
+    sendVoteResult(_postNum,_choice){
+        this.option.method='post';
+        this.option.body={
+            id : this.state.ID,
+            postNum : _postNum,
+            choice : _choice,
+        }
+        return this.fetchWrapper(this.link+'/vote_board/vote',this.option)
+    }
+    showVoteResult(_postNum){
+        this.option.method='post';
+        this.option.body={
+            postNum : _postNum,
+        }
+        return this.fetchWrapper(this.link+'/vote_board/show_vote',this.option)
     }
     getMyFreeBoardPosts(){ //Profile > MyFreeBoard에서 사용.
         this.option.method='post';

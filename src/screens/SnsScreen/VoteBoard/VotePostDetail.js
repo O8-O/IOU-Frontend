@@ -1,6 +1,7 @@
 import React from "react";
 import {View,StyleSheet,Text,Image,TouchableOpacity, Modal,TouchableWithoutFeedback } from "react-native";
 import {Keyboard} from 'react-native'
+import Network from "../../../network/Network";
 import VoteCommentFeed from './VoteCommentFeed';
 
 
@@ -15,43 +16,66 @@ export default class VotePostDetail extends React.Component{
             data : this.props.route.params.data,
             closeUp:false,
             closeUpImage:null,
+
+            choice:"",//사진 투표한 것
+            voteResult:"",
         };
     }
-    /*서버에서 받을 것
-       user, userPIcture, title, picture, heartNumber, commentNumber*/
-    pictureSpace(image){
-        if((image == null)){
-            console.log('detail 에서 그릴 data.contentImage 는 없다')
-            return <View style={{height:20}}/>
-        }
-        else{
-            console.log('detail 에서 그릴 data.contentImage 는')
-            return(
-                <View style={{alignItems:'center', marginTop:10, width:'100%',height:170,
-                    marginBottom:15, backgroundColor:'white'}}>
-                    <Image
-                        style={{width:310, height:170 /*resizeMode:'contain'*/}}
-                        source={{uri : image}}
-                    />
-                    <TouchableOpacity //사진 돋보기 기능
-                        onPress={()=>this.setState({closeUp: true,closeUpImage:image})}
-                        style={styles.closeUp}
-                    >
-                        <Image
-                            style={{width:18,height:18, resizeMode:'contain'}}
-                            source= {require("../../../../assets/img/closeUp.png")}
-                            //source= {require("../../../"
-                        />
-                    </TouchableOpacity>
-                </View>
 
-                
-            )
+    pressVote(){
+        if(this.state.choice !="" ){
+            return Network.sendVoteResult(this.state.data.postNum,this.state.choice)
+            .then(res=>res.json())
+            .then((res)=>{//서버로 번호 결과 전송
+                console.log("서버로 투표 번호 결과 전송")
+                console.log(res.result)
+                this.showResult()
+            })
+            .catch((err)=>{
+                console.log("서버로 투표 번호 결과 전송 에러")
+                console.log(err)
+            }) 
         }
     }
+    
+    showResult(){
+        return Network.showVoteResult(this.state.data.postNum)
+        .then(res=>res.json())
+            .then((res)=>{//서버로 번호 결과 전송
+                console.log("서버로부터 결과받기 성공")
+                console.log(res.result)
+                console.log(res.result[0].choice)
+                this.setState({voteResult:res.result[0]})
+                this.setState({voted:true})
+            })
+            .catch((err)=>{
+                console.log("서버로부터 결과 받기 에러")
+                console.log(err)
+            }) 
+    }
+
+    pictureSpace(image){//사진 두장 보여주는 부분
+        console.log('detail 에서 그릴 data.contentImage 는')
+        return(
+            <View style={{alignItems:'center', marginTop:10, width:165,height:170,
+                marginBottom:15, backgroundColor:'white'}}>
+                <Image
+                    style={{width:160, height:170 /*resizeMode:'contain'*/}}
+                    source={{uri : image}}
+                />
+                <TouchableOpacity //사진 돋보기 기능
+                    onPress={()=>this.setState({closeUp: true,closeUpImage:image})}
+                    style={styles.closeUp}
+                >
+                    <Image
+                        style={{width:18,height:18, resizeMode:'contain'}}
+                        source= {require("../../../../assets/img/closeUp.png")}
+                    />
+                </TouchableOpacity>
+            </View>                
+        )
+    }
     showModal(){
-        console.log('모달 열어')
-        console.log(this.state.closeUp)
         return(         
             <Modal 
                 visible={this.state.closeUp} 
@@ -74,10 +98,18 @@ export default class VotePostDetail extends React.Component{
     render(){
         const heartColor = this.state.liked ?  require("../../../../assets/img/heartPink.png") : 
                                                require("../../../../assets/img/heartBlack.png");
+        const checkBox1 = this.state.choice == 1 ?  require("../../../../assets/img/checked_box.png") : 
+                                               require("../../../../assets/img/unchecked_box.png");  
+        const checkBox2 = this.state.choice == 2 ?  require("../../../../assets/img/checked_box.png") : 
+                                               require("../../../../assets/img/unchecked_box.png");                                       
         const data = this.props.route.params.data;
-        const image = this.props.route.params.img;
-        const voteComment = this.state.voted ? '현재 투표수 1위는 : ' :
-                                               '투표를 하고 결과를 확인해보세요!' ;
+        const image1 = this.props.route.params.img1;
+        const image2 = this.props.route.params.img2;
+        const voteComment = this.state.voted ? '현재 ' +this.state.voteResult.choice+'번 이미지가 '+this.state.voteResult.voteNum
+                                                +'표로 1등입니다':
+                                               '투표 후 결과를 확인할 수 있습니다' ;
+        const result = this.state.voteResult != "" ? "" : "결정하기";
+
         return(          
             <View style={styles.container}>
                 <View style={{flex:1}}>
@@ -122,18 +154,41 @@ export default class VotePostDetail extends React.Component{
                             >
                             {data.contentText}
                         </Text>
+
                         <View style={styles.votingMessage}>
                             <Text>
                                 {voteComment} 
                             </Text>
                             <TouchableOpacity 
                                 onPress={()=>this.pressVote()}>
-                                <Text>
-                                    결정하기 
-                                </Text>
+                                <Text style={{color:'#419DFF'}}> {result} </Text>
                             </TouchableOpacity>
                         </View>
-                        {this.pictureSpace(image)}
+                        <View style={{flexDirection:'row',marginBottom:-7}}>
+                            <TouchableOpacity
+                                onPress={()=>{this.setState({choice:"1"})}}
+                                style={{flexDirection:'row'}}>
+                                <Image 
+                                    style={{width:18, height:18,resizeMode:'contain'}}
+                                    source ={checkBox1}
+                                />
+                                <Text>이미지 1번</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={{flexDirection:'row', marginLeft:90}}
+                                onPress={()=>{this.setState({choice:"2"})}}>
+                                <Image 
+                                    style={{width:18, height:18,resizeMode:'contain'}}
+                                    source ={checkBox2}
+                                />
+                                <Text>이미지 2번</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{flexDirection:'row'}}>
+                            {this.pictureSpace(image1)}
+                            {this.pictureSpace(image2)}
+                        </View>
+                        
                     </View>
                     </TouchableWithoutFeedback>
                     <View style={styles.commentScreen}>
@@ -142,7 +197,6 @@ export default class VotePostDetail extends React.Component{
                             getCommentNum={(num)=>{this.setState({commentNum:num})}}
                         />  
                     </View>
-                    
                     
                 </View>
                 {this.showModal()}
@@ -221,8 +275,8 @@ const styles = StyleSheet.create({
     votingMessage:{
         paddingHorizontal:10,
         marginVertical:10,
-        borderWidth:1,
-        borderRadius:5,
+        borderWidth:0.7,
+        borderRadius:2,
         borderColor:'black' ,  
         flexDirection:'row',
         alignItems:'center',

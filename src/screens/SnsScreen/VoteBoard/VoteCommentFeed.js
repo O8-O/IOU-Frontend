@@ -34,7 +34,7 @@ export default class VoteCommentFeed extends React.Component{
     }
     callSendCommentToServer(){
         this.textInput.clear()
-        return Network.sendCommentToServer(1,this.state.data.postNum,this.state.myComment)
+        return Network.sendCommentToServer(2,this.state.data.postNum,this.state.myComment)
         .then(()=>{
             this.setState(()=>{this.componentDidMount()})
             this.callGetComment()
@@ -42,7 +42,7 @@ export default class VoteCommentFeed extends React.Component{
     }
 
     callGetComment(){
-        return Network.getComment("1",this.state.data.postNum)
+        return Network.getComment("2",this.state.data.postNum)
         .then((response) => response.json())
         .then((resp)=>{
             console.log('getComment 불러온 댓글들은')
