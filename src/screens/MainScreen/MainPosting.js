@@ -133,7 +133,7 @@ export default class MainPosting extends React.Component{
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        marginVertical:2.5,
+        marginBottom:5,
         marginHorizontal:5,
         paddingHorizontal:45,
         paddingTop:12,

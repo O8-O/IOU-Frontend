@@ -66,6 +66,13 @@ export default class MainPostFeed extends React.Component{
             console.log(this.state.data)
             return(
                 <FlatList
+                    ListHeaderComponent={
+                        <View style={styles.container}>
+                            <Text style={styles.titleFont}>
+                                지금 <Text style={{color:'#FF7E76'}}>뜨고</Text> 있는 글
+                            </Text>
+                        </View>
+                    }
                     data={this.state.data}
                     keyExtractor={(index)=>JSON.stringify(index)}//{this._returnKey}
                     renderItem={this._renderPost}
@@ -81,3 +88,17 @@ export default class MainPostFeed extends React.Component{
 
     }
 }
+
+const styles = StyleSheet.create({
+    container:{
+        backgroundColor:'white',
+        marginHorizontal:5,
+        marginTop:5,
+        paddingVertical:20,
+        paddingLeft:40,
+    },
+    titleFont:{
+        fontSize:20,
+        fontFamily:'NanumSquare_acB'
+    }
+});

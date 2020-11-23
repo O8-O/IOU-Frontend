@@ -97,18 +97,14 @@ export default class VotePosting extends React.Component{
     }
 
 
-
     render(){      
-        const heartColor = this.state.liked ?  require("../../../../assets/img/heartPink.png") : 
-                                               require("../../../../assets/img/heartBlack.png");
-
         return(
             <TouchableOpacity  
                 style={styles.container}
                 onPress = {()=>
                     this.props.navigate.navigate("VotePostDetail",
                     { navigate :this.props.navigation, data:this.state.data,
-                        img1:this.state.picForDetail1,img2:this.state.picForDetail2})}//{(data)=>this.props.onPress(data)}
+                        img1:this.state.picForDetail1,img2:this.state.picForDetail2})}
                 >
                 <View //사용자 + 사진 
                     style={{flexDirection: 'row',alignItems:'center'}}>
@@ -130,14 +126,10 @@ export default class VotePosting extends React.Component{
                 </View>
                 <View //하트와 말풍선
                     style={{alignItems:'center',flexDirection: 'row',marginVertical:9}}>
-                    <TouchableOpacity style={{alignItems:'center'}} //하트
-                        onPress = {()=>{ this.pressLikeButton()}}
-                    >
-                        <Image
-                            style={{ width:18, height:18,resizeMode:'contain',marginBottom:1}}
-                            source={heartColor}
-                        />
-                    </TouchableOpacity>
+                    <Image
+                        style={{ width:18, height:18,resizeMode:'contain',marginBottom:1}}
+                        source={require("../../../../assets/img/heartBlack.png")}
+                    />
                     <Text style = {[styles.numberFont,{ paddingLeft:5}]}
                     > {this.state.data.recommend}</Text>
 

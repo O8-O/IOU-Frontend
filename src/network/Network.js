@@ -25,7 +25,7 @@ class _Network {
     getNetworkId(){
         return this.state.ID
     }
-    getMainBoardPosts(){ //FreeBoard에서 사용.
+    getMainBoardPosts(){ //MainBoard에서 사용.
         this.option.method='post';
         this.option.body={}
         return this.fetchWrapper(this.link+'/hot_board/show',this.option)
@@ -34,6 +34,17 @@ class _Network {
         this.option.method='post';
         this.option.body={}
         return this.fetchWrapper(this.link+'/free_board/show_all',this.option)
+    }
+    sendVotePost(_title,_contentText,img1,img2){//write 에서 변환할 사진이 있을때 서버로 보낼 때 씀.
+        this.option.method='post';
+        this.option.body={
+            title:_title,
+            contentText:_contentText,
+            id:this.state.ID,
+            imgFile:img1,
+            imgFile:img2,
+        }
+        return this.VoteBoardImageWrapper(this.link+'/vote_board/create',this.option,img1.uri,img2.uri)
     }
     getVoteBoardPosts(){
         this.option.method='post';
@@ -54,7 +65,23 @@ class _Network {
         this.option.body={
             postNum : _postNum,
         }
-        return this.fetchWrapper(this.link+'/vote_board/show_vote',this.option)
+        return this.fetchWrapper(this.link+'/vote_board/show_one',this.option)
+    }
+    checkFreeLiked(_postNum){
+        this.option.method='post';
+        this.option.body={
+            postNum : _postNum,
+            id:this.state.ID,
+        }
+        return this.fetchWrapper(this.link+'/recommend/exist_free',this.option)
+    }
+    checkVoteLiked(_postNum){
+        this.option.method='post';
+        this.option.body={
+            postNum : _postNum,
+            id:this.state.ID,
+        }
+        return this.fetchWrapper(this.link+'/recommend/exist_vote',this.option)
     }
     getMyFreeBoardPosts(){ //Profile > MyFreeBoard에서 사용.
         this.option.method='post';
@@ -63,7 +90,22 @@ class _Network {
         }
         return this.fetchWrapper(this.link+'/free_board/show_all_user_board',this.option)
     }
-
+    deleteFreeBoard(_id,_postNum){
+        this.option.method='post';
+        this.option.body={
+            postNum : _postNum,
+            id:_id,
+        }
+        return this.fetchWrapper(this.link+'/free_board/delete',this.option)
+    }
+    deleteVoteBoard(_id,_postNum){
+        this.option.method='post';
+        this.option.body={
+            postNum : _postNum,
+            id:_id,
+        }
+        return this.fetchWrapper(this.link+'/vote_board/delete',this.option)
+    }
     numToImg(num){ // selectedPic 에서 사용. 이미지 num을 주소로.
         return new Promise((res, rej) => {
             console.log('api에 붙는 num')
@@ -247,7 +289,7 @@ class _Network {
             postNum : _postNum,
             id : this.state.ID,
         }
-        return this.fetchWrapper(this.link+'/recommend/free',this.option)
+        return this.fetchWrapper(this.link+'/recommend/make_free',this.option)
     }
     decreaseFreeLike(_postNum){
         this.option.method='post';
@@ -255,16 +297,39 @@ class _Network {
             postNum : _postNum,
             id : this.state.ID,
         }
-        return this.fetchWrapper(this.link+'/recommend/freeCancel',this.option)
+        return this.fetchWrapper(this.link+'/recommend/cancel_free',this.option)
     }
 
-    freeBoardImageWrapper(url,opt,img){// for write to send freeboard post to server   
-        console.log('wrap 전 img는 : '+img)
-        let fileBody = {
+    increaseVoteLike(_postNum){
+        this.option.method='post';
+        this.option.body={
+            postNum : _postNum,
+            id : this.state.ID,
+        }
+        return this.fetchWrapper(this.link+'/recommend/make_vote',this.option)
+    }
+    decreaseVoteLike(_postNum){
+        this.option.method='post';
+        this.option.body={
+            postNum : _postNum,
+            id : this.state.ID,
+        }
+        return this.fetchWrapper(this.link+'/recommend/cancel_vote',this.option)
+    }
+
+
+    VoteBoardImageWrapper(url,opt,img1,img2){// for write to send freeboard post to server   
+        let fileBody1 = {
             name: 'imgFile',
-            filename: img+".jpg",
+            filename: img1+".jpg",
             type: "image/jpeg",
-            data: RNFetchBlob.wrap(img)
+            data: RNFetchBlob.wrap(img1)
+        }
+        let fileBody2 = {
+            name: 'imgFile',
+            filename: img2+".jpg",
+            type: "image/jpeg",
+            data: RNFetchBlob.wrap(img2)
         }
         let title = {
             name: "title",
@@ -282,18 +347,13 @@ class _Network {
             opt.body.title = JSON.stringify(opt.body.title)
             opt.body.contentText = JSON.stringify(opt.body.contentText)
             opt.body.id = JSON.stringify(opt.body.id)
-            console.log('freeBoardImageWrapper fetch전 data들')
-            console.log(opt.body.title)
-            console.log(opt.body.contentText)
-            console.log(opt.body.id)
-            console.log(fileBody.data)
-            RNFetchBlob.fetch('POST',url,{}, [fileBody,title,contentText,id])//[fileBody,opt.body])
+            RNFetchBlob.fetch('POST',url,{}, [fileBody1,fileBody2,title,contentText,id])//[fileBody,opt.body])
             .then(resp=>{
-                console.log('사진 fetch성공')
+                console.log('Vote 사진 fetch성공')
                 res(resp)
             })
             .catch(err=>{
-                console.log('사진 fetch 에러')
+                console.log('Vote 사진 fetch 에러')
                 rej(err)
             })
         })

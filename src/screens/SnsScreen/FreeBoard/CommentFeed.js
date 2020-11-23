@@ -66,10 +66,7 @@ export default class CommentFeed extends React.Component{
                         renderItem={this._renderPost}
                     />
             )
-    }/*
-    dismissKeyboard () {
-        Keyboard.dismiss()
-    }*/
+    }
 
     componentDidMount(){
         this.callGetComment()

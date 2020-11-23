@@ -11,8 +11,7 @@ import Profile from '../screens/ProfileScreen/Profile';
 import Preference from '../screens/ProfileScreen/Preference';
 import SelectedPic from '../screens/ProfileScreen/SelectedPic';
 import ChangePw from '../screens/ProfileScreen/ChangePw';
-import MyFreeBoard from '../screens/ProfileScreen/MyFreeBoardScreen/MyFreeBoard';
-import MyPostDetail from '../screens/ProfileScreen/MyFreeBoardScreen/MyPostDetail';
+
 
 /*메인게시판 */
 import MainBoard from '../screens/MainScreen/MainBoard';
@@ -70,8 +69,6 @@ import AdjustPic from '../screens/FixingPicScreen/AdjustPic';
                     <Stack.Screen name="Profile" component={Profile} options={{headerShown: false}}/>
                     <Stack.Screen name="Preference" component={Preference} options={{headerShown: false}}/>
                     <Stack.Screen name="ChangePw" component={ChangePw} options={{headerShown: false}}/>
-                    <Stack.Screen name="MyFreeBoard" component={MyFreeBoard} options={{headerShown: false}}/>
-                    <Stack.Screen name="MyPostDetail" component={MyPostDetail} options={{headerShown: false}}/>
                     <Stack.Screen name="SelectedPic" component={SelectedPic} options={{headerShown: false}}/>
                     
                 </Stack.Navigator>

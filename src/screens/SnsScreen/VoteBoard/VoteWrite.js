@@ -58,16 +58,14 @@ export default class VoteWrite extends React.Component{
         });
     }
 
-    callNWSendFreePost(){  
-        console.log('보내려는 이미지는')
-        console.log(this.state.imgFile)
-        return Network.sendFreePost(this.state.title,this.state.contentText,this.state.imgFile)
+    callNWSendVotePost(){  
+        return Network.sendVotePost(this.state.title,this.state.contentText,this.state.imgFile1,this.state.imgFile2)
         .then((resp)=>{
-            console.log('callNWSendFreePost 완료')
+            console.log('callNWSendVotePost 완료')
             console.log(resp)
         })
         .catch((err)=>{
-            console.log('callNWSendFreePost 에러')
+            console.log('callNWSendVotePost 에러')
             console.log(err)
         })
     }
@@ -75,7 +73,7 @@ export default class VoteWrite extends React.Component{
     doneButton(){
         if((this.state.title.length > 0 )&& (this.state.title.length < 20 )&&
             (this.state.contentText.length>0)){
-            this.callNWSendFreePost()
+            this.callNWSendVotePost()
             this.props.navigation.navigate("VoteBoard")
         }
         else{
@@ -122,16 +120,32 @@ export default class VoteWrite extends React.Component{
                                     this.setState({ contentText:input })}   
                             />    
                         </View>
-                        <Image 
-                            style={{marginTop:18, width:18, height:18,resizeMode:'contain'}}
-                            source={require("../../../../assets/img/gallery.png")}/>
-                        <View
-                            Style={{flexDirection:'row'}}>
+                        <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+                            <View style={{flexDirection:'row' }}>
+                                <Image 
+                                style={{marginTop:18, width:18, height:18,resizeMode:'contain'}}
+                                source={require("../../../../assets/img/gallery.png")}/>
+                                <Text style={{marginTop:17,marginLeft:5}}>
+                                    1번 이미지
+                                </Text>
+                            </View>
+                            
+                            <View style={{flexDirection:'row' ,marginRight:105}}>
+                                <Image 
+                                style={{marginTop:18, width:18, height:18,resizeMode:'contain'}}
+                                source={require("../../../../assets/img/gallery.png")}/>
+                                <Text style={{marginTop:17,marginLeft:5}}>
+                                    2번 이미지
+                                </Text>
+                            </View>
+                        </View>
+                        
+                        <View style={{flexDirection:'row'}}>
                             <TouchableOpacity //사진 추가
                                 onPress={this.showPicker1}
-                                style={{width:190,backgroundColor:'pink'}}>
+                                style={{width:190}}>
                                 <Image 
-                                    style={{marginTop:2, width:182.7, height:110.25,resizeMode:'contain'}}
+                                    style={{marginTop:2, width:182.7, height:110.25/*,resizeMode:'contain'*/}}
                                     source={this.state.imgFile1}/>
                                     
                             </TouchableOpacity>
@@ -139,12 +153,10 @@ export default class VoteWrite extends React.Component{
                                 onPress={this.showPicker2}
                                 style={{width:190}}>
                                 <Image 
-                                    style={{marginTop:2, width:182.7, height:110.25,resizeMode:'contain'}}
+                                    style={{marginTop:2, width:182.7, height:110.25/*,resizeMode:'contain'*/}}
                                     source={this.state.imgFile2}/>
-                                    
                             </TouchableOpacity>
-                        </View>
-                        
+                        </View>      
                 </View>
 
                 <View style ={styles.bottom}>

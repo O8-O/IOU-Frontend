@@ -11,35 +11,6 @@ export default class Posting extends React.Component{
             picForDetail:null,
         };
     }
-    pressLikeButton(){
-        this.setState({ liked: !this.state.liked})
-        if(this.state.liked){
-            return Network.increaseFreeLike(this.state.data.postNum)
-            .then((response) => response.json())
-            .then((resp)=>{
-                console.log('pressLikeButton 실행 성공결과는 : ')
-                console.log(resp.result)
-            })
-            .catch((err)=>{
-                console.log("decreaseFreeLike 에러!!");
-                console.log(err);
-            })
-        }
-        else{
-            return Network.decreaseFreeLike(this.state.data.postNum)
-            .then((response) => response.json())
-            .then((resp)=>{
-                console.log('decreaseFreeLike 실행 성공결과는 : ')
-                console.log(resp.result)
-            })
-            .catch((err)=>{
-                console.log("decreaseFreeLike 에러!!");
-                console.log(err);
-            })
-        }
-        
-
-    }
     numToImg(num){
         console.log('num 은 : '+num)
         return Network.numToImg(num)
@@ -80,11 +51,7 @@ export default class Posting extends React.Component{
     }
 
 
-
     render(){      
-        const heartColor = this.state.liked ?  require("../../../../assets/img/heartPink.png") : 
-                                               require("../../../../assets/img/heartBlack.png");
-
         return(
             <TouchableOpacity  
                 style={styles.container}
@@ -112,14 +79,10 @@ export default class Posting extends React.Component{
                 </View>
                 <View //하트와 말풍선
                     style={{alignItems:'center',flexDirection: 'row',marginVertical:9}}>
-                    <TouchableOpacity style={{alignItems:'center'}} //하트
-                        onPress = {()=>{ this.pressLikeButton()}}
-                    >
-                        <Image
-                            style={{ width:18, height:18,resizeMode:'contain',marginBottom:1}}
-                            source={heartColor}
-                        />
-                    </TouchableOpacity>
+                    <Image
+                        style={{ width:18, height:18,resizeMode:'contain',marginBottom:1}}
+                        source={require("../../../../assets/img/heartBlack.png")}
+                    />
                     <Text style = {[styles.numberFont,{ paddingLeft:5}]}
                     > {this.state.data.recommend}</Text>
 

@@ -12,13 +12,14 @@ export default class VotePostDetail extends React.Component{
             title: '나는 제목이야',
             liked:false,
             commentNum:null,
-            recommend:0,
+            recommend:100,
             data : this.props.route.params.data,
             closeUp:false,
             closeUpImage:null,
 
             choice:"",//사진 투표한 것
             voteResult:"",
+            id:null,
         };
     }
 
@@ -42,10 +43,17 @@ export default class VotePostDetail extends React.Component{
         return Network.showVoteResult(this.state.data.postNum)
         .then(res=>res.json())
             .then((res)=>{//서버로 번호 결과 전송
-                console.log("서버로부터 결과받기 성공")
-                console.log(res.result)
-                console.log(res.result[0].choice)
-                this.setState({voteResult:res.result[0]})
+                console.log("서버로부터 vote 결과받기 성공")
+                if(res.count.count1 > res.count.count2){
+                    this.setState({voteResult:"1번 이미지가 "+res.count.count1+" 표로 1등입니다."})
+                }
+                else if(res.count.count2 > res.count.count1){
+                    this.setState({voteResult:"2번 이미지가 "+res.count.count2+" 표로 1등입니다."})
+                }
+                else{
+                    this.setState({voteResult:"1, 2번 이미지가"+res.count.count1+" 표로 공동 1등입니다."})
+                }
+                
                 this.setState({voted:true})
             })
             .catch((err)=>{
@@ -55,7 +63,6 @@ export default class VotePostDetail extends React.Component{
     }
 
     pictureSpace(image){//사진 두장 보여주는 부분
-        console.log('detail 에서 그릴 data.contentImage 는')
         return(
             <View style={{alignItems:'center', marginTop:10, width:165,height:170,
                 marginBottom:15, backgroundColor:'white'}}>
@@ -95,6 +102,88 @@ export default class VotePostDetail extends React.Component{
         )
     }
 
+    callDelete(){
+        return Network.deleteVoteBoard(this.state.id,this.state.data.postNum)
+        .then(res=>res.json())
+        .then((resp)=>{
+            console.log('deleteVoteBoard 응답 성공은 : ')
+            console.log(resp.result)
+            if(resp.result){
+                //this.props.callGetComment()
+            }
+        
+        })
+        .catch((err)=>{
+            console.log("deleteVoteBoard 에러!!");
+            console.log(err);
+        })
+    }
+    deleteButton(){
+        console.log('지우는 권한')
+        console.log(this.state.id + this.state.data.writer)
+        if(this.state.id == this.state.data.writer){
+            return(
+                <TouchableOpacity
+                    style={{width:20,alignItems:'center',alignSelf:'flex-end',backgroundColor:'white'}}
+                    onPress={()=>this.callDelete()}>
+                    <Text style={{color:'#FF7E76'}}>
+                        X
+                    </Text>
+                </TouchableOpacity>
+            )
+        }
+    }
+
+    pressLikeButton(){
+        console.log('버튼 누르기 전 like의 상태는 '+ this.state.liked)
+        this.setState({ liked: !this.state.liked},
+            ()=>{this.likeChangeToServer()})      
+    }
+
+    likeChangeToServer(){
+        if(this.state.liked){
+            return Network.increaseVoteLike(this.state.data.postNum)
+            .then((response) => response.json())
+            .then((resp)=>{
+                console.log('press free LikeButton 실행 성공결과는 : ')
+                console.log(resp.result)
+            })
+            .catch((err)=>{
+                console.log("press FreeLike 에러!!");
+                console.log(err);
+            })
+        }
+        else{
+            return Network.decreaseVoteLike(this.state.data.postNum)
+            .then((response) => response.json())
+            .then((resp)=>{
+                console.log('decreaseFreeLike 실행 성공결과는 : ')
+                console.log(resp.result)
+            })
+            .catch((err)=>{
+                console.log("decreaseFreeLike 에러!!");
+                console.log(err);
+            })
+        }
+    }
+    checkLiked(){
+        return Network.checkVoteLiked(this.state.data.postNum)
+        .then((response) => response.json())
+        .then((res)=>{
+            console.log("checkVoteLiked 성공")
+            console.log(res.result)
+            this.setState({liked: res.result});
+        })
+        .catch(err=>{
+            console.log("checkVoteLiked 에러났엉")
+            console.log(err)
+        })
+    }
+    componentDidMount(){
+        this.checkLiked();
+        this.setState({id: Network.getNetworkId()})
+    }
+
     render(){
         const heartColor = this.state.liked ?  require("../../../../assets/img/heartPink.png") : 
                                                require("../../../../assets/img/heartBlack.png");
@@ -105,8 +194,7 @@ export default class VotePostDetail extends React.Component{
         const data = this.props.route.params.data;
         const image1 = this.props.route.params.img1;
         const image2 = this.props.route.params.img2;
-        const voteComment = this.state.voted ? '현재 ' +this.state.voteResult.choice+'번 이미지가 '+this.state.voteResult.voteNum
-                                                +'표로 1등입니다':
+        const voteComment = this.state.voted ? '현재 ' +this.state.voteResult:
                                                '투표 후 결과를 확인할 수 있습니다' ;
         const result = this.state.voteResult != "" ? "" : "결정하기";
 
@@ -115,9 +203,12 @@ export default class VotePostDetail extends React.Component{
                 <View style={{flex:1}}>
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                     <View style={styles.post}>
-                        <Text style={{marginTop:11,marginBottom:0, fontFamily:'NanumSquare_acB',fontSize:18}}>
-                            {data.title}
-                        </Text>
+                        <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+                            <Text style={{marginTop:11,marginBottom:0, fontFamily:'NanumSquare_acB',fontSize:18}}>
+                                {data.title}
+                            </Text>
+                            {this.deleteButton()}
+                        </View>
                         <View  //사용자 사진/이름/하트/말풍선
                             style={{flexDirection: 'row',alignItems:'center',marginBottom:5,height:30,
                                 borderWidth:2,borderColor:'white', borderBottomColor:'#E8E8E8',width:'100%'}}>
@@ -132,7 +223,7 @@ export default class VotePostDetail extends React.Component{
                             <View //하트와 말풍선
                                 style={{alignItems:'center',flexDirection: 'row', marginLeft:155, marginVertical:9}}>
                                 <TouchableOpacity style={{alignItems:'center'}}
-                                    onPress = {()=>{ this.setState({ liked: !this.state.liked})}}
+                                    onPress = {()=>{ this.pressLikeButton()}}
                                 >
                                     <Image
                                         style={{ width:18, height:18,resizeMode:'contain',marginBottom:1}}
@@ -140,7 +231,7 @@ export default class VotePostDetail extends React.Component{
                                     />
                                 </TouchableOpacity>
                                 <Text style = {[styles.numberFont,{ paddingLeft:5}]}
-                                > {this.state.recommend}</Text>
+                                > {this.state.data.recommend}</Text>
                                 <Image
                                     style={{ width:18, height:18,resizeMode:'contain',marginLeft:13}}
                                     source={require("../../../../assets/img/talkBubble.png")}
