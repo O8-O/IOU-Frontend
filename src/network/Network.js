@@ -25,6 +25,40 @@ class _Network {
     getNetworkId(){
         return this.state.ID
     }
+    requirePwChange(_email,_pw){
+        this.option.method='post';
+        this.option.body={
+            id:this.state.ID,
+            email:_email,
+            password:_pw,
+        }
+        return this.fetchWrapper(this.link+'/user/reset_password',this.option)
+    }
+    requireRegister(_id,_pw,_email){//회원가입 정보 전송
+        this.option.method='post';
+        this.option.headers={
+            'Content-Type': 'application/json',
+        }
+        this.option.body={
+            id: _id,
+            password: _pw,
+            email:_email
+        }
+        return this.fetchWrapper(this.link+'/user/sign_in',this.option)
+    }
+    prepareLogin(_id,_pw){
+        this.option.method='post';
+        this.option.headers={
+            'Content-Type': 'application/json',
+        }
+        this.option.body={
+            id: _id,
+            password: _pw
+        }
+        this.state.ID=_id;//나중에 다른곳에서 id쓰이는 것 대비해서 저장해둠.
+        return this.fetchWrapper(this.link+'/user/log_in',this.option)
+    } 
+
     getMainBoardPosts(){ //MainBoard에서 사용.
         this.option.method='post';
         this.option.body={}
@@ -123,42 +157,7 @@ class _Network {
                 console.log(err)
             })
         })
-    }
-    
-    requirePwChange(_email,_pw){
-        this.option.method='post';
-        this.option.body={
-            id:this.state.ID,
-            email:_email,
-            password:_pw,
-        }
-        return this.fetchWrapper(this.link+'/user/reset_password',this.option)
-    }
-    requireRegister(_id,_pw,_email){//회원가입 정보 전송
-        this.option.method='post';
-        this.option.headers={
-            'Content-Type': 'application/json',
-        }
-        this.option.body={
-            id: _id,
-            password: _pw,
-            email:_email
-        }
-        return this.fetchWrapper(this.link+'/user/sign_in',this.option)
-    }
-
-    prepareLogin(_id,_pw){
-        this.option.method='post';
-        this.option.headers={
-            'Content-Type': 'application/json',
-        }
-        this.option.body={
-            id: _id,
-            password: _pw
-        }
-        this.state.ID=_id;//나중에 다른곳에서 id쓰이는 것 대비해서 저장해둠.
-        return this.fetchWrapper(this.link+'/user/log_in',this.option)
-    }    
+    }  
 
     firstPreferenceResult(_list){//사용자가 선호도 조사에서 선택한 사진결과를 서버로 보내기.
         this.option.method='post';
@@ -197,15 +196,14 @@ class _Network {
         return this.fetchWrapper(this.link+'/user/show_user_preference',this.option)
     }
     
-
-    getRecommendImg(){//안쓰는듯
+    getRecommendImg(){// 아직 안만들어짐. RecommendPic 에서 recommend사진 가져올 때 씀
         this.option.method='post';
         this.option.body={
             id:this.state.ID
         }
         return this.fetchWrapper(this.link+'/user/show_preference',this.option)
     }
-    getFurnitureImg(img){
+    getFurnitureImg(img){ //세부인테리어 변경에서 추천 변경 가구 사진들 서버로부터 가져오기
         this.option.method='post';
         this.option.body={
             id:this.state.ID,
@@ -253,19 +251,18 @@ class _Network {
         return this.sendUserPicWithLightImageWrapper(this.link+'/user/upload_image',this.option,img.uri)
     }
 
-
-    sendFreePost(_title,_contentText,img){//write 에서 변환할 사진이 있을때 서버로 보낼 때 씀.
+    sendFreePost(_title,_contentText,_images){//write 에서 변환할 사진이 있을때 서버로 보낼 때 씀.
         console.log('보낼사진 img는 : '+img.uri);
         this.option.method='post';
         this.option.body={
             title:_title,
             contentText:_contentText,
             id:this.state.ID,
-            imgFile:img
+            imgFile:_images
         }
-        return this.freeBoardImageWrapper(this.link+'/free_board/create',this.option,img.uri)
+        return this.freeBoardImageWrapper(this.link+'/free_board/create',this.option,_images)
     }
-    sendFreePostNoPic(_title,_contentText){//write 에서 변환할 사진이 있을때 서버로 보낼 때 씀.
+    sendFreePostNoPic(_title,_contentText){//write 에서 변환할 사진이 없을때 서버로 보낼 때 씀.
         this.option.method='post';
         this.option.body={
             title:_title,
@@ -317,6 +314,42 @@ class _Network {
         return this.fetchWrapper(this.link+'/recommend/cancel_vote',this.option)
     }
 
+    FreeBoardImageWrapper(url,opt,_images){// for write to send freeboard post to server   
+        var images = [];
+        _images.map((image) => {
+            images.push({
+                data: RNFetchBlob.wrap(image.uri),
+                name: 'imgFile',
+                type: "image/jpeg",
+            });
+        });
+        let title = {
+            name: "title",
+            data: opt.body.title,
+        }
+        let contentText = {
+            name: "contentText",
+            data: opt.body.contentText,
+        }
+        let id = {
+            name: "id",
+            data: opt.body.id,
+        }
+        return new Promise((res, rej) => {
+            opt.body.title = JSON.stringify(opt.body.title)
+            opt.body.contentText = JSON.stringify(opt.body.contentText)
+            opt.body.id = JSON.stringify(opt.body.id)
+            RNFetchBlob.fetch('POST',url,{}, [images,title,contentText,id])//[fileBody,opt.body])
+            .then(resp=>{
+                console.log('Vote 사진 fetch성공')
+                res(resp)
+            })
+            .catch(err=>{
+                console.log('Vote 사진 fetch 에러')
+                rej(err)
+            })
+        })
+    }
 
     VoteBoardImageWrapper(url,opt,img1,img2){// for write to send freeboard post to server   
         let fileBody1 = {

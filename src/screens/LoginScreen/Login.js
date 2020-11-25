@@ -19,13 +19,6 @@ export default class Login extends React.Component{
             .then(resp=>{
                 console.log('선호도 조사 했는지 안했는지 테스트')
                 console.log(resp)
-                //선호도 조사를 한적이 있다면 바로 main으로 넘어간다
-                /*if(resp.result.image.length > 0){
-                    this.MainScreen()
-                }
-                else{//아니라면 선호도 조사창으로 간다.
-                    this.ProfileScreen()
-                }*/
                 if(!resp.result){// 선호도 조사한 적이 없다면
                     this.PreferenceScreen()
                 }

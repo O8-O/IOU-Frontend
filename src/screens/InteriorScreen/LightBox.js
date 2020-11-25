@@ -1,6 +1,6 @@
 import React from "react";
 import {View,StyleSheet,Image,Modal,Text,TouchableOpacity } from "react-native";
-import ColorPanel from 'react-native-color-panel';
+//import ColorPanel from 'react-native-color-panel';
 
 export default class ColorBox extends React.Component{
     constructor(props){
