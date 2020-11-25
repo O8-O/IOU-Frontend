@@ -17,6 +17,11 @@ export default class SelectStyle extends React.Component{
         }
     }
     
+    /*테스트 용으로 넣어둔것 . 테스트 뒤 지워 */
+    AdjustPicScreen() {
+        this.props.navigation.navigate("AdjustPic")
+    }
+
     MainScreen(){
         this.setState({waitScreen:false})
         console.log('색상'+this.state.selectedColor)
@@ -89,7 +94,6 @@ export default class SelectStyle extends React.Component{
                         </TouchableOpacity> 
                     </View>
                     <View style={{flex:1,marginLeft:42}}>
-                        <Text style={styles.subtitleText}>주요 색상</Text>
                         <Text style={styles.subtitleText}>조명 색상</Text>
                         <CheckBox/>
                         
@@ -99,12 +103,12 @@ export default class SelectStyle extends React.Component{
                                 this.setState({ selectedColor : color })/*spuidColor 를 다시 check에 넣어줌*/
                             }}
                             />
+                            
                         <TouchableOpacity 
-                            style={{ marginLeft:210, marginTop:130}}
-                            //onPress={()=>{this.RecommendPic()}}>
-                            onPress={
-                                ()=>{this.timer()}
-                            }>
+                            style={{ marginLeft:210, marginTop:160}}
+                            //onPress={()=>{this.timer()}}>
+                            onPress={()=>{this.AdjustPicScreen()}}>
+                            
                             
                             <Image
                                 style={{width:120,height:46,resizeMode:'contain'}}

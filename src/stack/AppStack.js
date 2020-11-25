@@ -44,7 +44,7 @@ import AdjustPic from '../screens/FixingPicScreen/AdjustPic';
   export default class AppStack extends React.Component{
     render(){
         return (
-                <Stack.Navigator>    
+                <Stack.Navigator initialRouteName="Login">    
                                   
                     <Stack.Screen name="Login" component={Login} options={{headerShown: false}}/>
                     <Stack.Screen name="Register" component={Register} options={{headerShown: false}}/>

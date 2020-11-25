@@ -118,6 +118,7 @@ export default class WallColorBox extends React.Component{
                 <Modal
                     visible={this.state.spuidSelected} 
                     transparent={true}
+                    onRequestClose={() => { this.setState({spuidSelected:false}) } }//뒤로가기 누르면 사라짐.
                     animationType="slide"> 
                     <View style={styles.modalBackground}>
                         <Image

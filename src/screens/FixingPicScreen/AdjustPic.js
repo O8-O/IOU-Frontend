@@ -77,8 +77,6 @@ export default class AdjustPic extends React.Component{
         super(props);
         this.state={
             furnitureScreen:false, //가구 선택하면 아래화면 바뀜
-            //image : this.props.route.params.img,
-            //sendImg: this.props.route.params.sendImg,
             wallHandChecked:false,
             floorHandChecked:false,
             wallBrushChecked:false,
@@ -219,10 +217,7 @@ export default class AdjustPic extends React.Component{
             )
         }   
     }
-    
-    /*componentDidMount(){
-        this.getImages()
-    }*/
+
 
     render(){
         return(
@@ -265,34 +260,29 @@ export default class AdjustPic extends React.Component{
                         <View >
                             <TouchableOpacity style={{width:320, borderWidth:1,alignItems:'center',borderColor:'black'}}>
                                 <Image 
-                                    style={{marginTop:2, width:290, height:175,resizeMode:'contain'}}
+                                    style={{marginTop:2, width:290, height:175/*,resizeMode:'contain'*/}}
                                     source={require('../../../assets/img/interior(83).jpg')}//{this.state.img}/>
                                     />
                             </TouchableOpacity>
-                        </View>                       
-                        <Modal 
+                        </View>   
+
+                        <Modal //이거 쓸거
                             visible={this.state.closeUp} 
                             transparent={true}
+                            onRequestClose={() => { this.setState({closeUp:false}) } }//뒤로가기 누르면 사라짐.
                             animationType="slide">
-                            <View style={{justifyContent:'center', backgroundColor:'rgba(0,0,0,0.7)',flex:1,}}> 
-                                <View style={{ width:'100%', alignItems:'center',backgroundColor:'white'}}>
+                            <TouchableOpacity style={{justifyContent:'center', backgroundColor:'rgba(0,0,0,0.7)',flex:1,}}
+                            onPress={()=>this.setState({closeUp: false}) }> 
+                                <View style={{ height:400, alignItems:'center'}}>
                                     <Image
-                                            style={{width:336,height:223.2,resizeMode:'contain'}}
-                                            source= {require("../../../assets/img/interior(83).jpg")}
-                                        />
-                                    <TouchableOpacity
-                                        onPress={()=>this.setState({closeUp: !this.state.closeUp}) }
-                                        style={{ position: 'absolute', backgroundColor: '#FFFFFF', right:15, bottom:10}}
-                                    >
-                                        <Image
-                                            style={{width:20,height:20, opacity:0.7,resizeMode:'contain'}}
-                                            source= {require("../../../assets/img/closeDown.png")}
-                                        />
-                                    </TouchableOpacity>
-                                </View>    
-                            </View>
+                                        style={{width:'100%',height:'100%',resizeMode:'contain'}}
+                                        source= {require("../../../assets/img/interior(83).jpg")}
+                                    />
+                                </View>  
+                            </TouchableOpacity>                   
                         </Modal>
-                   
+
+                
                     </View>
 
                     <View style={{flex:1,marginLeft:32}}>
@@ -353,7 +343,9 @@ export default class AdjustPic extends React.Component{
 }
 
 const styles = StyleSheet.create({
-
+    rotate:{
+        transform: [{ rotate: '90deg' }]
+    },
     board:{
         flex: 1,
         backgroundColor:'white',

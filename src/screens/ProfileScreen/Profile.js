@@ -38,14 +38,6 @@ export default class Pictures extends React.Component{
                     <View style={{ marginTop:30, borderWidth:1, borderColor:'white',borderTopColor:'#A9A9A9'}}>
                         <TouchableOpacity
                             style={{borderWidth:1, borderColor:'white',borderBottomColor:'#A9A9A9'}}
-                            onPress={()=>this.MyFreeBoardScreen()}
-                            >
-                            <Text style={styles.font}>
-                                내가 쓴 글 확인
-                            </Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={{borderWidth:1, borderColor:'white',borderBottomColor:'#A9A9A9'}}
                             onPress={()=>this.PreferenceScreen()}
                             >
                             <Text style={styles.font}>
@@ -115,9 +107,6 @@ export default class Pictures extends React.Component{
     }
     ProfileScreen(){
         this.props.navigation.navigate("Profile")
-    }
-    MyFreeBoardScreen() {
-        this.props.navigation.navigate("MyFreeBoard")
     }
     PreferenceScreen() {
         this.props.navigation.navigate("Preference")
