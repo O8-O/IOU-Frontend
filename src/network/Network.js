@@ -252,7 +252,7 @@ class _Network {
     }
 
     sendFreePost(_title,_contentText,_images){//write 에서 변환할 사진이 있을때 서버로 보낼 때 씀.
-        console.log('보낼사진 img는 : '+img.uri);
+        console.log('보낼사진 img는 : '+_images.uri);
         this.option.method='post';
         this.option.body={
             title:_title,
@@ -260,7 +260,7 @@ class _Network {
             id:this.state.ID,
             imgFile:_images
         }
-        return this.freeBoardImageWrapper(this.link+'/free_board/create',this.option,_images)
+        return this.freeBoardImageWrapper(this.link+'/free_board/create',this.option,_images.uri)
     }
     sendFreePostNoPic(_title,_contentText){//write 에서 변환할 사진이 없을때 서버로 보낼 때 씀.
         this.option.method='post';
@@ -314,15 +314,13 @@ class _Network {
         return this.fetchWrapper(this.link+'/recommend/cancel_vote',this.option)
     }
 
-    FreeBoardImageWrapper(url,opt,_images){// for write to send freeboard post to server   
-        var images = [];
-        _images.map((image) => {
-            images.push({
-                data: RNFetchBlob.wrap(image.uri),
-                name: 'imgFile',
-                type: "image/jpeg",
-            });
-        });
+    freeBoardImageWrapper(url,opt,img1){// for write to send freeboard post to server   
+        let fileBody1 = {
+            name: 'imgFile',
+            filename: img1+".jpg",
+            type: "image/jpeg",
+            data: RNFetchBlob.wrap(img1)
+        }
         let title = {
             name: "title",
             data: opt.body.title,
@@ -339,13 +337,13 @@ class _Network {
             opt.body.title = JSON.stringify(opt.body.title)
             opt.body.contentText = JSON.stringify(opt.body.contentText)
             opt.body.id = JSON.stringify(opt.body.id)
-            RNFetchBlob.fetch('POST',url,{}, [images,title,contentText,id])//[fileBody,opt.body])
+            RNFetchBlob.fetch('POST',url,{}, [fileBody1,title,contentText,id])//[fileBody,opt.body])
             .then(resp=>{
-                console.log('Vote 사진 fetch성공')
+                console.log('free 사진 fetch성공')
                 res(resp)
             })
             .catch(err=>{
-                console.log('Vote 사진 fetch 에러')
+                console.log('free 사진 fetch 에러')
                 rej(err)
             })
         })
