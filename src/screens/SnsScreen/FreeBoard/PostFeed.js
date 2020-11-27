@@ -11,7 +11,7 @@ export default class PostFeed extends React.Component{
             postLoadFlag:false,
             data:[],
             isFetching: false,
-            
+            isMounted :false,
         };
     }
 
@@ -37,30 +37,36 @@ export default class PostFeed extends React.Component{
             );
    }
    componentDidMount(){
-       console.log('getFreeBoardPosts 시작~')
-    return Network.getFreeBoardPosts()
-        .then((response) => response.json())
-        .then((res)=>{
-            console.log("post feed는 성공")
-            console.log(res)
-            this.setState({data: res.result});
-            this.setState({data : this.state.data.reverse()})
-        })
-        .catch(err=>{
-            console.log("free board1에서 에러났엉")
-            console.log(err)
-        })
-        .then(()=>{
-            console.log("data가 넘어온건")
-            this.setState({ isFetching: false })
-            this.setState({postLoadFlag:true})
-            
-        })
-        .catch(err=>{
-            console.log("free board2!에서 에러났엉")
-            console.log(err)
-        })
+        this.state.isMounted = true;
+        if (this.state.isMounted) {
+            console.log('getFreeBoardPosts 시작~')
+            return Network.getFreeBoardPosts()
+                .then((response) => response.json())
+                .then((res)=>{
+                    console.log("post feed는 성공")
+                    console.log(res)
+                    this.setState({data: res.result});
+                    this.setState({data : this.state.data.reverse()})
+                })
+                .catch(err=>{
+                    console.log("free board1에서 에러났엉")
+                    console.log(err)
+                })
+                .then(()=>{
+                    console.log("data가 넘어온건")
+                    this.setState({ isFetching: false })
+                    this.setState({postLoadFlag:true})
+                    
+                })
+                .catch(err=>{
+                    console.log("free board2!에서 에러났엉")
+                    console.log(err)
+                })
+        }
     };
+    componentWillUnmount() {
+        this.state.isMounted = false;
+    }
     render(){
         if(this.state.postLoadFlag){
             console.log(this.state.data)
@@ -70,7 +76,6 @@ export default class PostFeed extends React.Component{
                     keyExtractor={(index)=>JSON.stringify(index)}//{this._returnKey}
                     renderItem={this._renderPost}
                     onRefresh={() => this.onRefresh()}
-                    //refreshing={this.state.isFetching}  
                     refreshing={this.state.isFetching}
                 />  
             )

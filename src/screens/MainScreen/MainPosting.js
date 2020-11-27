@@ -41,7 +41,7 @@ export default class MainPosting extends React.Component{
 
     }
     numToImg(num){
-        console.log('num 은 : '+num)
+        console.log('Main posting 의 num 은 : '+num)
         return Network.numToImg(num)
         .then((resp)=>{
             console.log('res.url 은 : ')

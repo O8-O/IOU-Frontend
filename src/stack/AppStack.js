@@ -20,8 +20,6 @@ import MainPostDetail from '../screens/MainScreen/MainPostDetail';
 /*자유게시판*/
 import FreeBoard from '../screens/SnsScreen/FreeBoard/FreeBoard';
 import PostDetail from '../screens/SnsScreen/FreeBoard/PostDetail';
-//import Posting from '../screens/SnsScreen/FreeBoard/Posting';
-//import PostFeed from '../screens/SnsScreen/FreeBoard/PostFeed';
 import Write from '../screens/SnsScreen/FreeBoard/Write';
 
 /*투표 게시판*/
@@ -34,7 +32,7 @@ import UploadPic from '../screens/InteriorScreen/UploadPic';
 import SelectStyle from '../screens/InteriorScreen/SelectStyle';
 import RecommendPic from '../screens/FixingPicScreen/RecommendPic';
 import AdjustPic from '../screens/FixingPicScreen/AdjustPic';
-
+import Furnitures from '../screens/FixingPicScreen/Furnitures';
 
 
 
@@ -57,6 +55,7 @@ import AdjustPic from '../screens/FixingPicScreen/AdjustPic';
                     <Stack.Screen name="SelectStyle" component={SelectStyle} options={{headerShown: false}}/>
                     <Stack.Screen name="RecommendPic" component={RecommendPic} options={{headerShown: false}}/>
                     <Stack.Screen name="AdjustPic" component={AdjustPic} options={{headerShown: false}}/>
+                    <Stack.Screen name="Furnitures" component={Furnitures} options={{headerShown: false}}/>
                     
                     <Stack.Screen name="FreeBoard" component={FreeBoard} options={{headerShown: false}}/>
                     <Stack.Screen name="PostDetail" component={PostDetail} options={{headerShown: false}}/>

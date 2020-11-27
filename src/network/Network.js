@@ -203,14 +203,12 @@ class _Network {
         }
         return this.fetchWrapper(this.link+'/user/show_preference',this.option)
     }
-    getFurnitureImg(img){ //세부인테리어 변경에서 추천 변경 가구 사진들 서버로부터 가져오기
+    getFurnitureImg(){ //세부인테리어 변경에서 추천 변경 가구 사진들 서버로부터 가져오기
         this.option.method='post';
         this.option.body={
-            id:this.state.ID,
-            imgFile:img
         }
 
-        return this.imageWrapper(this.link+'/user/upload_image',this.option,img.uri)
+        return this.fetchWrapper(this.link+'/user/show_preference',this.option)
     }
 
     getComment(_postType,_postNum){ // freeboard 에서 사용. 게시물의 댓글 불러오기
@@ -251,16 +249,16 @@ class _Network {
         return this.sendUserPicWithLightImageWrapper(this.link+'/user/upload_image',this.option,img.uri)
     }
 
-    sendFreePost(_title,_contentText,_images){//write 에서 변환할 사진이 있을때 서버로 보낼 때 씀.
-        console.log('보낼사진 img는 : '+_images.uri);
+    sendFreePost(_title,_contentText,_image){//write 에서 변환할 사진이 있을때 서버로 보낼 때 씀.
+        console.log('보낼사진 img는 : '+_image.uri);
         this.option.method='post';
         this.option.body={
             title:_title,
             contentText:_contentText,
             id:this.state.ID,
-            imgFile:_images
+            imgFile:_image
         }
-        return this.freeBoardImageWrapper(this.link+'/free_board/create',this.option,_images.uri)
+        return this.freeBoardImageWrapper(this.link+'/free_board/create',this.option,_image.uri)
     }
     sendFreePostNoPic(_title,_contentText){//write 에서 변환할 사진이 없을때 서버로 보낼 때 씀.
         this.option.method='post';
@@ -315,6 +313,8 @@ class _Network {
     }
 
     freeBoardImageWrapper(url,opt,img1){// for write to send freeboard post to server   
+        console.log("내가 보낼 freeboard img는")
+        console.log(img1)
         let fileBody1 = {
             name: 'imgFile',
             filename: img1+".jpg",
@@ -333,11 +333,11 @@ class _Network {
             name: "id",
             data: opt.body.id,
         }
-        return new Promise((res, rej) => {
+        return new Promise((res, rej) => {   
             opt.body.title = JSON.stringify(opt.body.title)
             opt.body.contentText = JSON.stringify(opt.body.contentText)
             opt.body.id = JSON.stringify(opt.body.id)
-            RNFetchBlob.fetch('POST',url,{}, [fileBody1,title,contentText,id])//[fileBody,opt.body])
+            RNFetchBlob.fetch('POST',url,{}, [fileBody1,title,contentText,id])
             .then(resp=>{
                 console.log('free 사진 fetch성공')
                 res(resp)
@@ -416,6 +416,7 @@ class _Network {
     sendUserPicWithLightImageWrapper(url,opt,img){//조명 선택 시 이미지 전송
         let fileBody = {
             name: 'imgFile',
+            filename: img+".jpg",
             type: "image/jpeg",
             data: RNFetchBlob.wrap(img)
         }
@@ -425,20 +426,20 @@ class _Network {
         }
         let lightColor ={
             name: 'lightColor',
-            data: opt.body.id,
+            data: opt.body.lightColor,
         }
-        opt.body.id = JSON.stringify(opt.body.id)
-        opt.body.lightColor = JSON.stringify(opt.body.lightColor)
+        
         return new Promise((res, rej) => {
+            opt.body.id = JSON.stringify(opt.body.id)
+            opt.body.lightColor = JSON.stringify(opt.body.lightColor)
             console.log('sendUserPicWithLightImageWrapper fetch전')
-            console.log(opt.body.id)
-            RNFetchBlob.fetch('POST',url,{}, [fileBody,id,lightColor])//[fileBody,opt.body])
+            RNFetchBlob.fetch('POST',url,{}, [fileBody,id,lightColor])
             .then(resp=>{
-                console.log('사진 fetch성공')
+                console.log('sendUserPicWithLightImageWrapper fetch성공')
                 res(resp)
             })
             .catch(err=>{
-                console.log('사진 fetch 에러')
+                console.log('sendUserPicWithLightImageWrapper fetch 에러')
                 rej(err)
             })
         })

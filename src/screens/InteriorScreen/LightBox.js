@@ -1,6 +1,6 @@
 import React from "react";
 import {View,StyleSheet,Image,Modal,Text,TouchableOpacity } from "react-native";
-//import ColorPanel from 'react-native-color-panel';
+import ColorPanel from 'react-native-color-panel';
 
 export default class ColorBox extends React.Component{
     constructor(props){
@@ -67,8 +67,6 @@ export default class ColorBox extends React.Component{
             this.setState({selectedColor : this.state.boxColor3},
                 ()=>{this.props.updateSelectedColor(this.state.selectedColor)});
         }
-        this.props.updateSelectedColor(this.state.selectedColor);
-        console.log('light box안에서 바뀐 색상'+this.state.selectedColor)
     }
     box4(){
         if(this.state.selectedBox == 4){
@@ -86,11 +84,7 @@ export default class ColorBox extends React.Component{
             this.setState({selectedColor : this.state.boxColor4},
                 ()=>{this.props.updateSelectedColor(this.state.selectedColor);});
             console.log('4번 선택')
-        }
-        setTimeout(
-            () => {console.log('light box안에서 바뀐 색상'+this.state.selectedColor)}
-            , 5000);//5sec
-        
+        }      
     }
 
     colorChange(){//spuid 눌렀을때, 선택된 상자들의 색깔 바꿔주기

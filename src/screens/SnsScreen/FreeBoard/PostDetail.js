@@ -51,6 +51,8 @@ export default class PostDetail extends React.Component{
     }
 
     callDelete(){
+        console.log('callDelete 의 지우는 권한')
+        console.log(this.state.id + this.state.data.writer)
         return Network.deleteFreeBoard(this.state.id,this.state.data.postNum)
         .then(res=>res.json())
         .then((resp)=>{

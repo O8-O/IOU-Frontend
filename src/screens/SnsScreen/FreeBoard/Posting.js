@@ -12,7 +12,7 @@ export default class Posting extends React.Component{
         };
     }
     numToImg(num){
-        console.log('num 은 : '+num)
+        console.log('free board의 num 은 : '+num)
         return Network.numToImg(num)
         .then((resp)=>{
             console.log('res.url 은 : ')

@@ -11,7 +11,7 @@ export default class MainPostFeed extends React.Component{
             postLoadFlag:false,
             data:[],
             isFetching: false,
-            
+            isMounted :false,
         };
     }
 
@@ -37,30 +37,37 @@ export default class MainPostFeed extends React.Component{
             );
    }
    componentDidMount(){
-       console.log('getMainBoardPosts 시작~')
-    return Network.getMainBoardPosts()
-        .then((response) => response.json())
-        .then((res)=>{
-            console.log("main board의 post feed는 성공")
-            console.log(res)
-            this.setState({data: res.result});
-            //this.setState({data : this.state.data.reverse()})
-        })
-        .catch(err=>{
-            console.log("main board1에서 에러났엉")
-            console.log(err)
-        })
-        .then(()=>{
-            console.log("main board data가 넘어온건")
-            this.setState({ isFetching: false })
-            this.setState({postLoadFlag:true})
-            
-        })
-        .catch(err=>{
-            console.log("main board2!에서 에러났엉")
-            console.log(err)
-        })
+        this.state.isMounted = true;
+        if(this.state.isMounted){
+            console.log('getMainBoardPosts 시작~')
+            return Network.getMainBoardPosts()
+                .then((response) => response.json())
+                .then((res)=>{
+                    console.log("main board의 post feed는 성공")
+                    console.log(res)
+                    this.setState({data: res.result});
+                    //this.setState({data : this.state.data.reverse()})
+                })
+                .catch(err=>{
+                    console.log("main board1에서 에러났엉")
+                    console.log(err)
+                })
+                .then(()=>{
+                    console.log("main board data가 넘어온건")
+                    this.setState({ isFetching: false })
+                    this.setState({postLoadFlag:true})
+                    
+                })
+                .catch(err=>{
+                    console.log("main board2!에서 에러났엉")
+                    console.log(err)
+                })
+       }
+       
     };
+    componentWillUnmount() {
+        this.state.isMounted = false;
+    }
     render(){
         if(this.state.postLoadFlag){
             console.log(this.state.data)

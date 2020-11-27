@@ -76,7 +76,7 @@ export default class AdjustPic extends React.Component{
                         <TouchableOpacity  
                             style={styles.nextButton}
                             activeOpacity={0.8}
-                            onPress={()=>{this.SignIn()}}
+                            onPress={()=>{this.FurnituresScreen()}}
                         >
                             <Text  style = {{fontFamily:'NanumSquare_acR',fontSize:16, color: "white"}}>
                                 더 많은 변형 결과 보러가기
@@ -132,6 +132,9 @@ export default class AdjustPic extends React.Component{
     }
     ProfileScreen(){
         this.props.navigation.navigate("Preference")
+    }
+    FurnituresScreen(){
+        this.props.navigation.navigate("Furnitures")
     }
 }
 

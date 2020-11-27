@@ -43,11 +43,11 @@ export default class SelectStyle extends React.Component{
             return Network.sendUserPic(this.state.sendImg)
             .then(res=>res.json())//blob())   blob이나 arrayBuffer는 이미지,파일같은 data에 사용.
             .then(resp=>{
-                //alert('사진 전송&변환 성공')
+                console.log("sendPic if 결과");
                 console.log(resp)
             })
             .catch(error => {
-                //alert('사진 전송&변환 error')
+                console.log("sendPic if 실패");
                 console.log(error)
             })
         }
@@ -55,25 +55,25 @@ export default class SelectStyle extends React.Component{
             console.log('selectstyle/sendPic 선택된 조명 색상은 : ')
             console.log(this.state.selectedColor)
             return Network.sendUserPicWithLight(this.state.sendImg,this.state.selectedColor)
-            .then(res=>res.json())//blob())   blob이나 arrayBuffer는 이미지,파일같은 data에 사용.
+            .then(res=>res.json())
             .then(resp=>{
-                console.log('사진 전송&변환 성공')
+                console.log("sendPic else 결과");
                 console.log(resp)
             })
             .catch(error => {
-                console.log('사진 전송&변환 error')
+                console.log("sendPic else 실패");
                 console.log(error)
             })
         }
 
     }
     timer() {
-        this.setState({waitScreen:true});
+        //this.setState({waitScreen:true});
         console.log('이미지 주소 : '+this.state.sendImg);
         this.sendPic();//서버로 사진 전송하고 결과 기다렸다 받기.
-        setTimeout(
-            () => {this.setState({waitScreen:false}),this.RecommendPic()}
-            , 1000);//1sec
+        //setTimeout(
+        //    () => {this.setState({waitScreen:false}),this.RecommendPic()}
+        //    , 1000);//1sec
     }
 
     render(){
@@ -106,10 +106,12 @@ export default class SelectStyle extends React.Component{
                             
                         <TouchableOpacity 
                             style={{ marginLeft:210, marginTop:160}}
-                            //onPress={()=>{this.timer()}}>
-                            onPress={()=>{this.AdjustPicScreen()}}>
+                            //onPress={()=>{this.AdjustPicScreen()}}>
+                            onPress={()=>{this.timer()}}>
                             
                             
+                            
+             
                             <Image
                                 style={{width:120,height:46,resizeMode:'contain'}}
                                 source={require("../../../assets/img/nextButton.png")}
