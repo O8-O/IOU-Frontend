@@ -35,7 +35,7 @@ export default class PostFeed extends React.Component{
         this.setState({isFetching: true},
             () => {this.componentDidMount()}
             );
-   }
+    }
    componentDidMount(){
         this.state.isMounted = true;
         if (this.state.isMounted) {

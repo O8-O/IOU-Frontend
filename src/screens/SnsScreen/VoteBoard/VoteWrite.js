@@ -50,6 +50,7 @@ export default class VoteWrite extends React.Component{
                 alert('사진 선택을 취소했습니다');
             }
             else{
+                //Uri uri = Uri.parse("file:///sdcard/img.png");
                 const uri = {uri: response.uri};
                 this.setState({imgFile2:uri}); 
                 const path = {uri: response.path};

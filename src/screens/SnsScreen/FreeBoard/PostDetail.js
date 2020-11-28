@@ -1,6 +1,7 @@
 import React from "react";
 import {View,StyleSheet,Text,Image,TouchableOpacity, Modal,TouchableWithoutFeedback } from "react-native";
 import {Keyboard} from 'react-native'
+import { ScrollView } from "react-native-gesture-handler";
 import Network from "../../../network/Network";
 
 import CommentFeed from './CommentFeed';
@@ -29,23 +30,26 @@ export default class PostDetail extends React.Component{
         }
         else{
             console.log('detail 에서 그릴 data.contentImage 는')
+            console.log(image)
             return(
-                <View style={{alignItems:'center', marginTop:10, width:'100%',height:170,
-                    marginBottom:15, backgroundColor:'white'}}>
-                    <Image
-                        style={{width:310, height:170 /*resizeMode:'contain'*/}}
-                        source={{uri : image}}
-                    />
-                    <TouchableOpacity //사진 돋보기 기능
-                        onPress={()=>this.setState({closeUp: true,closeUpImage:image})}
-                        style={styles.closeUp}
-                    >
+                image.map(img=>(
+                    <View style={styles.pictureBoarder}
+                        key={img.uri} >
                         <Image
-                            style={{width:18,height:18, resizeMode:'contain'}}
-                            source= {require("../../../../assets/img/closeUp.png")}
+                            style={{width:312, height:170 /*resizeMode:'contain'*/}}
+                            source={img}
                         />
-                    </TouchableOpacity>
-                </View>               
+                        <TouchableOpacity //사진 돋보기 기능
+                            onPress={()=>this.setState({closeUp: true,closeUpImage:img})}
+                            style={styles.closeUp}
+                        >
+                            <Image
+                                style={{width:18,height:18, resizeMode:'contain'}}
+                                source= {require("../../../../assets/img/closeUp.png")}
+                            />
+                        </TouchableOpacity>
+                    </View>     
+                ))          
             )
         }
     }
@@ -96,7 +100,7 @@ export default class PostDetail extends React.Component{
                     <View style={{ height:400, alignItems:'center'}}>
                         <Image
                             style={{width:'100%',height:'100%',resizeMode:'contain'}}
-                            source= {{uri:this.state.closeUpImage}}
+                            source= {this.state.closeUpImage}
                         />
                     </View>  
                 </TouchableOpacity>                   
@@ -161,8 +165,10 @@ export default class PostDetail extends React.Component{
         return(          
             <View style={styles.container}>
                 <View style={{flex:1}}>
-                    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+                    
                     <View style={styles.post}>
+                        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+                        <View>
                         <View style={{flexDirection:'row',justifyContent:'space-between'}}>
                             <Text style={{marginTop:11,marginBottom:0, fontFamily:'NanumSquare_acB',fontSize:18}}>
                                 {data.title}
@@ -209,17 +215,21 @@ export default class PostDetail extends React.Component{
                             >
                             {data.contentText}
                         </Text>
-                        {this.pictureSpace(image)}
+                        </View>
+                        </TouchableWithoutFeedback>
+                        <ScrollView horizontal={true}>
+                            <View style={{flexDirection:'row'}}>
+                                {this.pictureSpace(image)}
+                            </View>
+                        </ScrollView>
                     </View>
-                    </TouchableWithoutFeedback>
+                    
                     <View style={styles.commentScreen}>
                         <CommentFeed
                             data={data}
                             getCommentNum={(num)=>{this.setState({commentNum:num})}}
                         />
-                        
                     </View>
-                    
                 </View>
                 {this.showModal()}
                 <View style ={styles.bottom}>
@@ -294,6 +304,15 @@ const styles = StyleSheet.create({
         paddingHorizontal:30,
         paddingTop:12,
         backgroundColor:'white',
+    },
+    pictureBoarder:{
+        alignItems:'center',
+        marginTop:10,
+        width:314,
+        height:170,
+        marginBottom:15, 
+        marginHorizontal:2,
+        //backgroundColor:'white'
     },
     closeUp:{ // 확대 버튼
         width:20,height:20,

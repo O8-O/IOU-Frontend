@@ -72,9 +72,10 @@ export default class VotePosting extends React.Component{
     }
 
     pictureSpace(){
-        if(this.state.pictureFlag1 &&this.state.pictureFlag1){
+        if(this.state.pictureFlag1 &&this.state.pictureFlag2){
             console.log('vote/pictureSpace 그리게 될 최동 이미지는')
             console.log(this.state.picForDetail1)
+            console.log(this.state.picForDetail2)
             return(
                 <View style={{flexDirection:'row'}}>
                     <Image
@@ -92,6 +93,7 @@ export default class VotePosting extends React.Component{
     }
 
     componentDidMount(){
+        console.log("새 창 그리기 시작")
         this.numToImg1(this.state.data.contentImage1);
         this.numToImg2(this.state.data.contentImage2);
     }

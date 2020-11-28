@@ -69,17 +69,7 @@ class _Network {
         this.option.body={}
         return this.fetchWrapper(this.link+'/free_board/show_all',this.option)
     }
-    sendVotePost(_title,_contentText,img1,img2){//write 에서 변환할 사진이 있을때 서버로 보낼 때 씀.
-        this.option.method='post';
-        this.option.body={
-            title:_title,
-            contentText:_contentText,
-            id:this.state.ID,
-            imgFile:img1,
-            imgFile:img2,
-        }
-        return this.VoteBoardImageWrapper(this.link+'/vote_board/create',this.option,img1.uri,img2.uri)
-    }
+    
     getVoteBoardPosts(){
         this.option.method='post';
         this.option.body={}
@@ -248,18 +238,6 @@ class _Network {
         }
         return this.sendUserPicWithLightImageWrapper(this.link+'/user/upload_image',this.option,img.uri)
     }
-
-    sendFreePost(_title,_contentText,_image){//write 에서 변환할 사진이 있을때 서버로 보낼 때 씀.
-        console.log('보낼사진 img는 : '+_image.uri);
-        this.option.method='post';
-        this.option.body={
-            title:_title,
-            contentText:_contentText,
-            id:this.state.ID,
-            imgFile:_image
-        }
-        return this.freeBoardImageWrapper(this.link+'/free_board/create',this.option,_image.uri)
-    }
     sendFreePostNoPic(_title,_contentText){//write 에서 변환할 사진이 없을때 서버로 보낼 때 씀.
         this.option.method='post';
         this.option.body={
@@ -311,8 +289,59 @@ class _Network {
         }
         return this.fetchWrapper(this.link+'/recommend/cancel_vote',this.option)
     }
+    sendVotePost(_title,_contentText,img1,img2){//write 에서 변환할 사진이 있을때 서버로 보낼 때 씀.
+        this.option.method='post';
+        this.option.body={
+            title:_title,
+            contentText:_contentText,
+            id:this.state.ID,
+            imgFile:img1,
+            imgFile:img2,
+        }
+        return this.VoteBoardImageWrapper(this.link+'/vote_board/create',this.option,img1.uri,img2.uri)
+    }
+    sendFreePost1(_title,_contentText,_image){//write 에서 변환할 사진이 있을때 서버로 보낼 때 씀.
+        console.log('보낼사진 img는 : '+_image.uri);
+        this.option.method='post';
+        this.option.body={
+            title:_title,
+            contentText:_contentText,
+            id:this.state.ID,
+        }
+        return this.freeBoardImageWrapper1(this.link+'/free_board/create',this.option,_image.uri)
+    }
+    sendFreePost2(_title,_contentText,_images){//write 에서 변환할 사진이 있을때 서버로 보낼 때 씀.
+        //console.log('보낼사진 img는 : '+_images.uri);
+        this.option.method='post';
+        this.option.body={
+            title:_title,
+            contentText:_contentText,
+            id:this.state.ID,
+        }
+        return this.freeBoardImageWrapper2(this.link+'/free_board/create',this.option,_images)
+    }
+    sendFreePost3(_title,_contentText,_image){//write 에서 변환할 사진이 있을때 서버로 보낼 때 씀.
+        console.log('보낼사진 img는 : '+_image.path);
+        this.option.method='post';
+        this.option.body={
+            title:_title,
+            contentText:_contentText,
+            id:this.state.ID,
+        }
+        return this.freeBoardImageWrapper3(this.link+'/free_board/create',this.option,_image.path)
+    }
+    sendFreePost4(_title,_contentText,_image){//write 에서 변환할 사진이 있을때 서버로 보낼 때 씀.
+        console.log('보낼사진 img는 : '+_image.path);
+        this.option.method='post';
+        this.option.body={
+            title:_title,
+            contentText:_contentText,
+            id:this.state.ID,
+        }
+        return this.freeBoardImageWrapper4(this.link+'/free_board/create',this.option,_image.path)
+    }
 
-    freeBoardImageWrapper(url,opt,img1){// for write to send freeboard post to server   
+    freeBoardImageWrapper1(url,opt,img1){// for write to send freeboard post to server   
         console.log("내가 보낼 freeboard img는")
         console.log(img1)
         let fileBody1 = {
@@ -348,6 +377,49 @@ class _Network {
             })
         })
     }
+    freeBoardImageWrapper2(url,opt,img){// for write to send freeboard post to server   
+        console.log("내가 보낼 freeboard img는")
+        console.log(img)
+        let fileBody1 = {
+            name: 'imgFile',
+            filename: img[0].uri+".jpg",
+            type: "image/jpeg",
+            data: RNFetchBlob.wrap(img[0].uri)
+        }
+        let fileBody2 = {
+            name: 'imgFile',
+            filename: img[1].uri+".jpg",
+            type: "image/jpeg",
+            data: RNFetchBlob.wrap(img[1].uri)
+        }
+        let title = {
+            name: "title",
+            data: opt.body.title,
+        }
+        let contentText = {
+            name: "contentText",
+            data: opt.body.contentText,
+        }
+        let id = {
+            name: "id",
+            data: opt.body.id,
+        }
+        return new Promise((res, rej) => {   
+            opt.body.title = JSON.stringify(opt.body.title)
+            opt.body.contentText = JSON.stringify(opt.body.contentText)
+            opt.body.id = JSON.stringify(opt.body.id)
+            RNFetchBlob.fetch('POST',url,{}, [fileBody1,fileBody2,title,contentText,id])
+            .then(resp=>{
+                console.log('free 사진 fetch성공')
+                res(resp)
+            })
+            .catch(err=>{
+                console.log('free 사진 fetch 에러')
+                rej(err)
+            })
+        })
+    }
+
 
     VoteBoardImageWrapper(url,opt,img1,img2){// for write to send freeboard post to server   
         let fileBody1 = {

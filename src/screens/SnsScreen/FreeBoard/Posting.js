@@ -8,48 +8,117 @@ export default class Posting extends React.Component{
         this.state={
             data : this.props.item,
             pictureFlag:false,
-            picForDetail:null,
+            picForDetail:[],
         };
     }
-    numToImg(num){
-        console.log('free board의 num 은 : '+num)
-        return Network.numToImg(num)
-        .then((resp)=>{
-            console.log('res.url 은 : ')
-            console.log(resp.url)
-            this.setState({picForDetail : resp.url}) //data.contentImage 에 넣어야 함.
-            
-            this.setState({pictureFlag:true})
-        })
-        .catch((err)=>{
+    async numToImg1(num){   
+        console.log('num 은 : '+num)
+        try {
+            const resp = await Network.numToImg(num);
+            console.log('res.url 은 : ');
+            console.log(resp.url);
+            var uri = { uri: resp.url };
+            var temp = this.state.picForDetail.concat(uri);
+            this.setState({ picForDetail: temp });
+            this.setState({pictureFlag:true});
+        } catch (err) {
             console.log("callNumToInt 에러!!");
             console.log(err);
-        })
+        }
     }
 
+
+
+    async numToImg2(num){    
+        try {
+            const resp = await Network.numToImg(num[0]);
+            var uri = { uri: resp.url };
+            var temp = this.state.picForDetail.concat(uri);
+            this.setState({ picForDetail: temp });
+            const resp_1 = await Network.numToImg(num[1]);
+            var uri_1 = { uri: resp_1.url };
+            var temp_1 = this.state.picForDetail.concat(uri_1);
+            this.setState({ picForDetail: temp_1 });
+            this.setState({pictureFlag:true});
+        } catch (err) {
+            console.log(err);
+        }      
+    }
+
+    /*numToImg2(num){    
+        return Network.numToImg(num[0])
+        .then((resp)=>{
+            var uri = {uri:resp.url};
+            var temp = this.state.picForDetail.concat(uri);
+            this.setState({picForDetail : temp})  
+            return Network.numToImg(num[1])
+            .then((resp)=>{
+                var uri = {uri:resp.url};
+                var temp = this.state.picForDetail.concat(uri);
+                this.setState({picForDetail : temp})  
+            })     
+        })
+        .catch((err)=>{
+            console.log(err);
+        })      
+    }*/
+    
+
+
+    readyToDrawPicture(i,num){    
+        if(i ==(num.length-1)){//for문 다 돌았다면 화면에 사진 그려주기
+            console.log("posting > num to img됐으니까 화면에 그린다. i 는 "+ i )
+            this.setState({pictureFlag:true})
+        }
+    }
     pictureSpace(){
         if(this.state.pictureFlag){
-                if((this.state.data.contentImage == null)){
+            if((this.state.data.contentImage == null)){
+                console.log('pictureSpace 이미지 없어서 안그림')
                 return <View/>
             }
             else{
                 console.log('pictureSpace 그리게 될 최동 이미지는')
-                console.log(this.state.picForDetail)
+                console.log(this.state.picForDetail[0])
+                console.log("")
                 return(
                     <Image
-                        style={{width:290, height:150, /*resizeMode:'contain'*/}}
-                        source={{uri : this.state.picForDetail}}
+                        style={{backgroundColor:'pink', width:290, height:150 /*resizeMode:'contain'*/}}
+                        source={this.state.picForDetail[0]}
                     />
                 )
             }
         }
     }
-
-    componentDidMount(){
-        if(this.state.data.contentImage != null)
-            this.numToImg(this.state.data.contentImage)
+    multipleImage(){
+        if(this.state.data.contentImage !=null){
+            if(this.state.data.contentImage.length >1){
+                return(
+                    <Image
+                        style={styles.closeUp}
+                        source={require("../../../../assets/img/multipleImages.png")}
+                    />
+                )
+            }
+            else{
+                return(
+                    <View/>
+                )
+            }
+        }
     }
-
+    componentDidMount(){
+        console.log("새 창 그리기 시작")
+        if(this.state.data.contentImage != null){
+            if(this.state.data.contentImage.length == 1){
+                this.numToImg1(this.state.data.contentImage)
+            }
+            else if(this.state.data.contentImage.length == 2){
+                this.numToImg2(this.state.data.contentImage)
+            }
+        }
+            
+    }
 
     render(){      
         return(
@@ -102,6 +171,15 @@ const styles = StyleSheet.create({
         paddingTop:12,
         backgroundColor:'white',
     },
+    closeUp:{ // 확대 버튼
+        width:20,height:20,
+        resizeMode:'contain',
+        position: 'absolute', alignItems:'center',
+        justifyContent:'center', 
+        right:8, bottom:3,
+        opacity:0.8,
+    },
+
     numberFont:{
         fontFamily:'Ubuntu-Regular',
         fontSize:15, 

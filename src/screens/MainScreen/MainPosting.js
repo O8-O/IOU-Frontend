@@ -64,6 +64,7 @@ export default class MainPosting extends React.Component{
             else{
                 console.log('pictureSpace 그리게 될 최동 이미지는')
                 console.log(this.state.picForDetail)
+                console.log("")
                 return(
                     <Image
                         style={{width:290, height:150, /*resizeMode:'contain'*/}}

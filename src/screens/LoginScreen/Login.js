@@ -23,7 +23,7 @@ export default class Login extends React.Component{
                     this.PreferenceScreen()
                 }
                 else{//아니라면 선호도 조사창으로 간다.
-                    this.MainScreen()
+                    this.FreeBoard()
                 }
             })
     }
@@ -126,6 +126,9 @@ export default class Login extends React.Component{
     }
     MainScreen(){
         this.props.navigation.navigate("MainBoard")
+    }
+    FreeBoard() {
+        this.props.navigation.navigate("FreeBoard")
     }
     PreferenceScreen(){
         this.props.navigation.navigate("Preference")
