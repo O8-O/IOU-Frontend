@@ -1,5 +1,6 @@
 import React from "react";
 import {View,StyleSheet,Text,Image,TouchableOpacity, TextInput,TouchableWithoutFeedback,Keyboard } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 //import ImagePicker from 'react-native-image-picker';
 import ImagePicker from 'react-native-image-crop-picker';
 import Network from "../../../network/Network";
@@ -188,14 +189,20 @@ export default class Write extends React.Component{
                         <Image 
                             style={{marginTop:18, width:18, height:18,resizeMode:'contain'}}
                             source={require("../../../../assets/img/gallery.png")}/>
-                        <View
-                            Style={{flexDirection:'row'}}>
-                            <TouchableOpacity //사진 추가
-                                onPress={this.showPicker}
-                                style={{flexDirection:'row',flexWrap:'wrap'}}>
-                                {this.pictures()}
-                            </TouchableOpacity>
-                        </View>
+                        <ScrollView>
+                            <View
+                                Style={{flexDirection:'row'}}>
+                                <TouchableOpacity //사진 추가
+                                    onPress={this.showPicker}
+                                    style={{flexDirection:'row',flexWrap:'wrap'}}>
+                                    {this.pictures()}
+                                </TouchableOpacity>
+                            </View>
+                            <View style={{height:20}}>
+
+                            </View>
+                        </ScrollView>
+                        
                         
                 </View>
 

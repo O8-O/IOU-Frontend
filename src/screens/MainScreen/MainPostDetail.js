@@ -1,6 +1,7 @@
 import React from "react";
-import {View,StyleSheet,Text,Image,TouchableOpacity, Modal,TouchableWithoutFeedback } from "react-native";
-import {Keyboard} from 'react-native'
+import {View,StyleSheet,Text,Image,TouchableOpacity, ScrollView,
+    Modal,TouchableWithoutFeedback,Keyboard } from "react-native";
+//import {Keyboard} from 'react-native'
 import Network from "../../network/Network";
 import MainCommentFeed from './MainCommentFeed';
 
@@ -19,8 +20,8 @@ export default class MainPostDetail extends React.Component{
             id:null,
         };
     }
-    /*서버에서 받을 것
-       user, userPIcture, title, picture, heartNumber, commentNumber*/
+
+    /*
     pictureSpace(image){
         if((image == null)){
             console.log('detail 에서 그릴 data.contentImage 는 없다')
@@ -32,7 +33,7 @@ export default class MainPostDetail extends React.Component{
                 <View style={{alignItems:'center', marginTop:10, width:'100%',height:170,
                     marginBottom:15, backgroundColor:'white'}}>
                     <Image
-                        style={{width:310, height:170 /*resizeMode:'contain'*/}}
+                        style={{width:310, height:170 }}
                         source={{uri : image}}
                     />
                     <TouchableOpacity //사진 돋보기 기능
@@ -51,9 +52,37 @@ export default class MainPostDetail extends React.Component{
             )
         }
     }
+    */
+    pictureSpace(image){
+        if((image == null)){
+            console.log('detail 에서 그릴 data.contentImage 는 없다')
+            return <View style={{height:20}}/>
+        }
+        else{
+            return(
+                image.map((img,index)=>(
+                    <View style={styles.pictureBoarder}
+                        key={index} >
+                        <Image
+                            style={{width:312, height:170 /*resizeMode:'contain'*/}}
+                            source={img}
+                        />
+                        <TouchableOpacity //사진 돋보기 기능
+                            onPress={()=>this.setState({closeUp: true,closeUpImage:img})}
+                            style={styles.closeUp}
+                        >
+                            <Image
+                                style={{width:17,height:17, resizeMode:'contain'}}
+                                source= {require("../../../assets/img/closeUp.png")}
+                            />
+                        </TouchableOpacity>
+                    </View>     
+                ))          
+            )
+        }
+    }
+
     showModal(){
-        console.log('모달 열어')
-        console.log(this.state.closeUp)
         return(         
             <Modal 
                 visible={this.state.closeUp} 
@@ -65,7 +94,7 @@ export default class MainPostDetail extends React.Component{
                     <View style={{ height:400, alignItems:'center'}}>
                         <Image
                             style={{width:'100%',height:'100%',resizeMode:'contain'}}
-                            source= {{uri:this.state.closeUpImage}}
+                            source= {this.state.closeUpImage}
                         />
                     </View>  
                 </TouchableOpacity>                   
@@ -79,10 +108,7 @@ export default class MainPostDetail extends React.Component{
         .then((resp)=>{
             console.log('deleteFreeBoard 응답 성공은 : ')
             console.log(resp.result)
-            if(resp.result){
-                //this.props.callGetComment()
-            }
-        
+            this.MainScreen()
         })
         .catch((err)=>{
             console.log("deleteFreeBoard 에러!!");
@@ -166,8 +192,9 @@ export default class MainPostDetail extends React.Component{
         return(          
             <View style={styles.container}>
                 <View style={{flex:1}}>
-                    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                     <View style={styles.post}>
+                        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+                        <View>
                         <View style={{flexDirection:'row',justifyContent:'space-between'}}>
                             <Text style={{marginTop:11,marginBottom:0, fontFamily:'NanumSquare_acB',fontSize:18}}>
                                 {data.title}
@@ -184,7 +211,6 @@ export default class MainPostDetail extends React.Component{
                             <Text style={{paddingLeft:5,fontFamily:'Ubuntu-Light',fontSize:13}}>
                                 {data.writer}
                             </Text>
-
                             <View //하트와 말풍선
                                 style={{alignItems:'center',flexDirection: 'row', marginLeft:155, marginVertical:9}}>
                                 <TouchableOpacity style={{alignItems:'center'}}
@@ -210,9 +236,14 @@ export default class MainPostDetail extends React.Component{
                             >
                             {data.contentText}
                         </Text>
-                        {this.pictureSpace(image)}
+                        </View>
+                        </TouchableWithoutFeedback>
+                        <ScrollView horizontal={true}>
+                            <View style={{flexDirection:'row'}}>
+                                {this.pictureSpace(image)}
+                            </View>
+                        </ScrollView>
                     </View>
-                    </TouchableWithoutFeedback>
                     <View style={styles.commentScreen}>
                         <MainCommentFeed
                             data={data}
@@ -222,6 +253,7 @@ export default class MainPostDetail extends React.Component{
                     
                 </View>
                 {this.showModal()}
+
                 <View style ={styles.bottom}>
                     <View style = {styles.shadow}></View>
                    <View style ={styles.bottomBar}>
@@ -293,6 +325,15 @@ const styles = StyleSheet.create({
         justifyContent:'center', 
         backgroundColor: 'white', 
         right:8, bottom:3
+    },
+    pictureBoarder:{
+        alignItems:'center',
+        marginTop:10,
+        width:314,
+        height:170,
+        marginBottom:15, 
+        marginHorizontal:2,
+        //backgroundColor:'white'
     },
     commentScreen:{
         flex: 1,

@@ -32,9 +32,9 @@ export default class PostDetail extends React.Component{
             console.log('detail 에서 그릴 data.contentImage 는')
             console.log(image)
             return(
-                image.map(img=>(
+                image.map((img,index)=>(
                     <View style={styles.pictureBoarder}
-                        key={img.uri} >
+                        key={index} >
                         <Image
                             style={{width:312, height:170 /*resizeMode:'contain'*/}}
                             source={img}
@@ -44,7 +44,7 @@ export default class PostDetail extends React.Component{
                             style={styles.closeUp}
                         >
                             <Image
-                                style={{width:18,height:18, resizeMode:'contain'}}
+                                style={{width:17,height:17, resizeMode:'contain'}}
                                 source= {require("../../../../assets/img/closeUp.png")}
                             />
                         </TouchableOpacity>
@@ -62,10 +62,7 @@ export default class PostDetail extends React.Component{
         .then((resp)=>{
             console.log('deleteFreeBoard 응답 성공은 : ')
             console.log(resp.result)
-            if(resp.result){
-                //this.props.callGetComment()
-            }
-        
+            this.FreeBoard()
         })
         .catch((err)=>{
             console.log("deleteFreeBoard 에러!!");
@@ -315,11 +312,11 @@ const styles = StyleSheet.create({
         //backgroundColor:'white'
     },
     closeUp:{ // 확대 버튼
-        width:20,height:20,
+        width:19,height:19,
         position: 'absolute', alignItems:'center',
         justifyContent:'center', 
         backgroundColor: 'white', 
-        right:8, bottom:3
+        right:5, bottom:3
     },
     commentScreen:{
         flex: 1,

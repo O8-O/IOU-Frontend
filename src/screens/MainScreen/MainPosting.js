@@ -8,7 +8,7 @@ export default class MainPosting extends React.Component{
         this.state={
             data : this.props.item,
             pictureFlag:false,
-            picForDetail:null,
+            picForDetail:[],
         };
     }
     pressLikeButton(){
@@ -40,6 +40,7 @@ export default class MainPosting extends React.Component{
         
 
     }
+    /*
     numToImg(num){
         console.log('Main posting 의 num 은 : '+num)
         return Network.numToImg(num)
@@ -54,30 +55,144 @@ export default class MainPosting extends React.Component{
             console.log("callNumToInt 에러!!");
             console.log(err);
         })
+    }*/
+    async numToImg1(num){   
+        try {
+            const resp = await Network.numToImg(num);
+            var uri = { uri: resp.url };
+            var temp = this.state.picForDetail.concat(uri);
+            this.setState({ picForDetail: temp });
+            this.setState({pictureFlag:true});
+        } catch (err) {
+            console.log("callNumToInt 에러!!");
+            console.log(err);
+        }
     }
+    async numToImg2(num){    
+        try {
+            const resp = await Network.numToImg(num[0]);
+            var uri = { uri: resp.url };
+            var temp = this.state.picForDetail.concat(uri);
+            this.setState({ picForDetail: temp });
+
+            const resp_1 = await Network.numToImg(num[1]);
+            var uri_1 = { uri: resp_1.url };
+            var temp_1 = this.state.picForDetail.concat(uri_1);
+            this.setState({ picForDetail: temp_1 });
+
+            this.setState({pictureFlag:true});
+        } catch (err) {
+            console.log(err);
+        }      
+    }
+    async numToImg3(num){    
+        try {
+            const resp = await Network.numToImg(num[0]);
+            var uri = { uri: resp.url };
+            var temp = this.state.picForDetail.concat(uri);
+            this.setState({ picForDetail: temp });
+
+            const resp_1 = await Network.numToImg(num[1]);
+            var uri_1 = { uri: resp_1.url };
+            var temp_1 = this.state.picForDetail.concat(uri_1);
+            this.setState({ picForDetail: temp_1 });
+
+            const resp_2 = await Network.numToImg(num[2]);
+            var uri_2 = { uri: resp_2.url };
+            var temp_2 = this.state.picForDetail.concat(uri_2);
+            this.setState({ picForDetail: temp_2 });
+
+            this.setState({pictureFlag:true});
+        } catch (err) {
+            console.log(err);
+        }      
+    }
+    async numToImg4(num){    
+        try {
+            const resp = await Network.numToImg(num[0]);
+            var uri = { uri: resp.url };
+            var temp = this.state.picForDetail.concat(uri);
+            this.setState({ picForDetail: temp });
+
+            const resp_1 = await Network.numToImg(num[1]);
+            var uri_1 = { uri: resp_1.url };
+            var temp_1 = this.state.picForDetail.concat(uri_1);
+            this.setState({ picForDetail: temp_1 });
+
+            const resp_2 = await Network.numToImg(num[2]);
+            var uri_2 = { uri: resp_2.url };
+            var temp_2 = this.state.picForDetail.concat(uri_2);
+            this.setState({ picForDetail: temp_2 });
+
+            const resp_3 = await Network.numToImg(num[2]);
+            var uri_3 = { uri: resp_3.url };
+            var temp_3 = this.state.picForDetail.concat(uri_3);
+            this.setState({ picForDetail: temp_3 });
+
+            this.setState({pictureFlag:true});
+        } catch (err) {
+            console.log(err);
+        }      
+    }
+
+
 
     pictureSpace(){
         if(this.state.pictureFlag){
-                if((this.state.data.contentImage == null)){
+            if((this.state.data.contentImage == null)){
+                console.log('pictureSpace 이미지 없어서 안그림')
                 return <View/>
             }
             else{
-                console.log('pictureSpace 그리게 될 최동 이미지는')
-                console.log(this.state.picForDetail)
-                console.log("")
                 return(
                     <Image
-                        style={{width:290, height:150, /*resizeMode:'contain'*/}}
-                        source={{uri : this.state.picForDetail}}
+                        style={{backgroundColor:'pink', width:290, height:150 /*resizeMode:'contain'*/}}
+                        source={this.state.picForDetail[0]}
                     />
                 )
             }
         }
     }
 
+    /*
     componentDidMount(){
         if(this.state.data.contentImage != null)
             this.numToImg(this.state.data.contentImage)
+    }*/
+    multipleImage(){
+        if(this.state.data.contentImage !=null){
+            if(this.state.data.contentImage.length >1){
+                return(
+                    <Image
+                        style={styles.closeUp}
+                        source={require("../../../assets/img/multipleImages.png")}
+                    />
+                )
+            }
+            else{
+                return(
+                    <View/>
+                )
+            }
+        }
+    }
+    componentDidMount(){
+        console.log("새 창 그리기 시작")
+        if(this.state.data.contentImage != null){
+            if(this.state.data.contentImage.length == 1){
+                this.numToImg1(this.state.data.contentImage)
+            }
+            else if(this.state.data.contentImage.length == 2){
+                this.numToImg2(this.state.data.contentImage)
+            }
+            else if(this.state.data.contentImage.length == 3){
+                this.numToImg3(this.state.data.contentImage)
+            }
+            else if(this.state.data.contentImage.length == 4){
+                this.numToImg4(this.state.data.contentImage)
+            }
+        }
+            
     }
 
 
@@ -110,6 +225,7 @@ export default class MainPosting extends React.Component{
                 <View //첨부 사진
                     style={{alignItems:'center',backgroundColor:'white'}}>
                     {this.pictureSpace()}
+                    {this.multipleImage()}
                 </View>
                 <View //하트와 말풍선
                     style={{alignItems:'center',flexDirection: 'row',marginVertical:9}}>
@@ -139,6 +255,14 @@ const styles = StyleSheet.create({
         paddingHorizontal:45,
         paddingTop:12,
         backgroundColor:'white',
+    },
+    closeUp:{ // 확대 버튼
+        width:20,height:20,
+        resizeMode:'contain',
+        position: 'absolute', alignItems:'center',
+        justifyContent:'center', 
+        right:8, bottom:3,
+        opacity:0.8,
     },
     numberFont:{
         fontFamily:'Ubuntu-Regular',
