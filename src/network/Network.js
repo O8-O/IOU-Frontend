@@ -183,17 +183,25 @@ class _Network {
         return this.fetchWrapper(this.link+'/user/show_user_preference',this.option)
     }
     
-    getRecommendImg(img){// 아직 안만들어짐. RecommendPic 에서 recommend사진 가져올 때 씀
+    getRecommendImg(num){// 아직 안만들어짐. RecommendPic 에서 recommend사진 가져올 때 씀
+        this.option.method='post';
+        /*
+        this.option.headers={
+            'Content-Type': 'application/json',
+        }
+        */
         this.option.body={
             id:this.state.ID,
-            imageNum:img,
+            imageNum:num,
         }
-        return this.RecommendImageWrapper(this.link+'/user/changed_image_dummy',this.option,img.uri)
+        
+        return this.fetchWrapper(this.link+'/user/show_changed_image',this.option)
     }
+    /* RecommendImageWrapper
     RecommendImageWrapper(url,opt,img){//recommend pic 의 image wrapper
         let fileBody = {
             name: 'imageNum',
-            filename: img+".jpg",
+            filename: img,//+".jpg",
             type: "image/jpeg",
             data: RNFetchBlob.wrap(img)
         }
@@ -214,6 +222,8 @@ class _Network {
             })
         })
     }
+    */
+
     getFurnitureImg(){ //세부인테리어 변경에서 추천 변경 가구 사진들 서버로부터 가져오기
         this.option.method='post';
         this.option.body={
@@ -609,7 +619,7 @@ class _Network {
     sendUserPicWithLightImageWrapper(url,opt,img){//조명 선택 시 이미지 전송
         let fileBody = {
             name: 'imgFile',
-            filename: img+".jpg",
+            filename: img,//+".jpg",
             type: "image/jpeg",
             data: RNFetchBlob.wrap(img)
         }

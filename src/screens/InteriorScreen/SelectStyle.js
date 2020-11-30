@@ -12,11 +12,12 @@ export default class SelectStyle extends React.Component{
             img : this.props.route.params.img,
             sendImg: this.props.route.params.sendImg,
             imgList:null, // 받아온 recommend images
-
+            imageNum:0,
             /*spoid*/
             spoid:false,
             selectedColor:null, // 선택된 색
             dataReceived:false,
+            resultFlag:false,
         }
     }
     
@@ -24,11 +25,14 @@ export default class SelectStyle extends React.Component{
         if(this.state.selectedColor == null){
             console.log('selectstyle/sendPic 선택된 조명 색상은 없음')
             try {
+                this.setState({waitScreen:true});//modal 켜기
+                //sendUserPicWithLight함수가 오래걸림.그래서 그전에 그냥 모달 켜줘
                 const res = await Network.sendUserPic(this.state.sendImg);
                 const resp = res.json();
                 console.log("sendPic if 결과");
-                console.log(resp);
-                this.callGetRecommendData(); // 결과 받는 함수 시작
+                console.log(resp.result);
+                this.setState({imageNum:resp.result},
+                    ()=>{this.callGetRecommendData()})// 결과 받는 함수 시작
             } catch (error) {
                 console.log("sendPic if 실패");
                 console.log(error);
@@ -38,11 +42,14 @@ export default class SelectStyle extends React.Component{
             console.log('selectstyle/sendPic 선택된 조명 색상은 : ')
             console.log(this.state.selectedColor)
             try {
+                this.setState({waitScreen:true});//modal 켜기
+                //sendUserPicWithLight함수가 오래걸림.그래서 그전에 그냥 모달 켜줘
                 const res_1 = await Network.sendUserPicWithLight(this.state.sendImg, this.state.selectedColor);
                 const resp_1 = res_1.json();
                 console.log("sendPic else 결과");
-                console.log(resp_1);
-                this.callGetRecommendData(); // 결과 받는 함수 시작
+                console.log(resp_1.result);
+                this.setState({imageNum:resp_1.result},
+                    ()=>{this.callGetRecommendData()})// 결과 받는 함수 시작
             } catch (error_1) {
                 console.log("sendPic else 실패");
                 console.log(error_1);
@@ -51,40 +58,56 @@ export default class SelectStyle extends React.Component{
 
     }
 
+    
     async callGetRecommendData(){
-        console.log('callGetRecommendData 시작')
-        this.getRecommendData();
-        /*while(!this.state.dataReceived){ //이거 그대로 쓰면 에러. while계속 돌아감
-            console.log('while문 안에 들어갔음')
-            setTimeout(() => {this.getRecommendData()}, 10000);//10sec
-        }*/
+        const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-        //recommend pic오면 화면 이동
-        //this.RecommendPic();
+        console.log('timeout끝');
+        this.getRecommendData()
+        await delay(30000);
+        while(!this.state.resultFlag){
+            this.getRecommendData()
+            await delay(10000);
+            console.log('timeout2끝');
+            
+        }
+        
+        
     }
-
     async getRecommendData(){
         try {
             console.log('getRecommendData 시작')
-            const res = await Network.getRecommendImg(this.state.sendImg);
-            const resp = res.json();
-            this.setState({dataReceived:true});
-            this.setState({waitScreen:false});//modal 끄기
-            this.setState({ imgList: resp.result });
+            const num = this.state.imageNum.toString()
+            console.log(" num 은 : ")
+            console.log(num)
+            const res = await Network.getRecommendImg(num);
+            const resp = await res.json();
+            console.log("selectstyle > getrecommend data 결과")
+            console.log(resp.result)
+            this.setState({resultFlag:resp.result})
+            if(resp.result){
+                this.setState({dataReceived:true});
+                console.log('getRecommendData 받아옴~')
+                this.setState({waitScreen:false});//modal 끄기
+                this.setState({ imgList: resp.result },
+                    ()=>{this.RecommendPic()});
+                console.log('getRecommendData 사진 가져오기 ok');
+                console.log(this.state.imgList)
+            }
+            else{
+                console.log('아직아니야 기다리자..')
+            }
 
-            console.log('getRecommendData 사진 가져오기 ok');
-            console.log(this.state.imgList)
             
-
         } catch (error) {
-            console.log('recommend 사진 가져오기 error');
+            console.log('getRecommendData 사진 가져오기 error');
             console.log(error);
         }
     }
 
     RecommendPic(){
         this.props.navigation.navigate("RecommendPic",
-        {img:this.state.img,sendImg:this.state.sendImg,recommendImages:this.state.imgList});
+        {image:this.state.img,/*sendImg:this.state.sendImg,*/recommendImages:this.state.imgList});
 
     }
     componentDidMount(){

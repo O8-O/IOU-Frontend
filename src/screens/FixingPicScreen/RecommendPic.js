@@ -8,24 +8,58 @@ class LoadItem extends React.Component{//imageList
         this.state={
             //selected : this.props.selected,
             closeUp:false,
+            picForDetail:null,
+            pictureFlag:false,
+            image:this.props.image,
+            recommendImages:this.props.imgList
+        }
+    }
+    async numToImg(){   
+        try {
+            console.log("posting에서 numtoimg1들어가기 전 picForDetail은 비어있어야 함")
+            console.log(this.state.picForDetail)
+            
+            const resp = await Network.numToImg(this.state.image.imageNum);
+            var uri = { uri: resp.url };
+            this.setState({ picForDetail: uri });
+            this.setState({pictureFlag:true});
+        } catch (err) {
+            console.log("callNumToInt 에러!!");
+            console.log(err);
         }
     }
 
+    pictureSpace(){
+        if(this.state.pictureFlag){
+            console.log("reecommend>picturespace에서 사진 그린다")
+            return(              
+                <Image
+                    style={{width:140,height:93,resizeMode:'contain'}}
+                    source={this.state.picForDetail}
+                />
+            ) 
+        }
+    }
+    press(){
+        console.log('RecommendPic > press누름')
+        this.props.selecteImg(this.state.image)
+        this.props.onPress()
+    }
+    componentDidMount(){
+        this.numToImg()
+    }
     render() {
         //const lineColor = this.state.selected == true ? '#419DFF' : '#F1F0EE';
         console.log('selected'+this.state.selected)
         return (
             <View >
                 <TouchableOpacity
-                    onPress={this.props.onPress }
+                    onPress={()=>{this.press()}}
                     style={{marginTop:10, marginHorizontal:10,justifyContent:'center',
                     width:140,height:97, borderWidth:2,borderColor:'#F1F0EE', backgroundColor:'white'}}
-                    key={JSON.stringify(this.props.imageNum)}
+                    key={JSON.stringify(this.state.image.imageNum)}
                 >
-                    <Image
-                        style={{width:140,height:93,resizeMode:'contain'}}
-                        source= {require("../../../assets/img/interior(83).jpg")}
-                    />
+                {this.pictureSpace()}
                 </TouchableOpacity>
                 <TouchableOpacity //돋보기 기능
                     onPress={()=>this.setState({closeUp: !this.state.closeUp}) }
@@ -39,28 +73,23 @@ class LoadItem extends React.Component{//imageList
                 <Modal 
                     visible={this.state.closeUp} 
                     transparent={true}
+                    onRequestClose={() => { this.setState({closeUp:false}) } }//뒤로가기 누르면 사라짐.
                     animationType="slide">
                     <View style={{justifyContent:'center', backgroundColor:'rgba(0,0,0,0.7)',flex:1,}}> 
                         <View style={{ width:'100%', alignItems:'center',backgroundColor:'white'}}>
                             <Image
                                     style={{width:336,height:223.2,resizeMode:'contain'}}
-                                    source= {require("../../../assets/img/interior(83).jpg")}
+                                    source= {this.state.picForDetail}
                             />
-                            <TouchableOpacity
-                                onPress={()=>this.setState({closeUp: !this.state.closeUp}) }
-                                style={{ position: 'absolute', backgroundColor: '#FFFFFF', right:15, bottom:10}}
-                            >
-                                <Image
-                                    style={{width:20,height:20, opacity:0.7,resizeMode:'contain'}}
-                                    source= {require("../../../assets/img/closeDown.png")}
-                                />
-                            </TouchableOpacity>
                         </View>                       
                     </View>
                 </Modal>
             </View>
             
         )
+    }
+    AdjustPicScreen() {
+        this.props.navigation.navigate("AdjustPic",{selectedImg:this.state.image})
     }
 
 }
@@ -73,67 +102,73 @@ export default class RecommendPic extends React.Component{
             sendImg : this.props.route.params.sendImg,
             recommendImages : this.props.route.params.recommendImages,
             loadingFinishFlag:false,
+            selectedImg:null,
         }
     }
     
-
+/*
     getRecommendScreen(){
-        if(!this.state.loadingFinishFlag){
-            console.log('안그려')
-            return <View/>
-        }
-        else{
+
             console.log('플랫리스트를 그려')
             console.log(this.state.imgList)
             return(             
                 <FlatList
                     //contentContainerStyle={styles.list}
                     numColumns={2}
-                    ListHeaderComponent={<View/>}
+                    //ListHeaderComponent={<View/>}
                     data={this.state.recommendImages}
-                    renderItem={({item})=>
+                    keyExtractor={(item, index) => 'key'+index}
+                    renderItem={({item,index})=>
                         <LoadItem
                             imageList={item}
                             selected = {false}
                             onPress={()=>this.AdjustPicScreen()}
-                            //key={item.imageNum}
+                            key={index}
                         />
                     }
-                    keyExtractor={item=>JSON.stringify(item.imageNum)}
+                    //keyExtractor={item=>JSON.stringify(item.imageNum)}
                     //extraData={this.state.imgList.selected}
-                    ListFooterComponent={<View/>}
+                    //ListFooterComponent={<View/>}
                 />  
             )
-        }   
+        //}   
     }
+    */
     componentDidMount(){
-        this.getImages()
+
     }
     
     render(){
         return(
             <View style={styles.container}>
-                
-                <View style ={styles.board}>
-                    
-                        <Text style={[styles.title,{marginTop:40}]}>
-                            사용자의 선호도를 바탕으로 변형한 </Text>
-                        <Text style={[styles.title,{marginBottom:10}]}>이미지입니다.</Text>
-                        <Text style={{fontFamily:'NanumSquare_acR',fontSize:15,marginTop:15}}>
-                            원본 이미지</Text>
-                        <Image 
-                            style={{marginTop:2, width:290, height:175,resizeMode:'contain'}}
-                            source={this.state.img}/>
-                        <Text style={{fontFamily:'NanumSquare_acR',fontSize:15,marginTop:50,marginBottom:10}}>
-                            변형된 이미지들의 추천 목록입니다 </Text>
-                            
-                        <View style={{alignItems:'center'}}>
-                            {this.getRecommendScreen()}
-                        </View>
-
-                       
-                    </View>
-                
+                <View style ={styles.board}> 
+                    <Text style={[styles.title,{marginTop:40}]}>
+                        사용자의 선호도를 바탕으로 변형한 </Text>
+                    <Text style={[styles.title,{marginBottom:10}]}>이미지입니다.</Text>
+                    <Text style={{fontFamily:'NanumSquare_acR',fontSize:15,marginTop:15}}>
+                        원본 이미지</Text>
+                    <Image 
+                        style={{marginTop:2, width:290, height:175,resizeMode:'contain'}}
+                        source={this.state.img}/>
+                    <Text style={{fontFamily:'NanumSquare_acR',fontSize:15,marginTop:50,marginBottom:10}}>
+                        변형된 이미지들의 추천 목록입니다 </Text>
+                        <FlatList
+                            //contentContainerStyle={styles.list}
+                            numColumns={2}
+                            //ListHeaderComponent={<View/>}
+                            data={this.state.recommendImages}
+                            keyExtractor={(item, index) => 'key'+index}
+                            renderItem={({item,index})=>
+                            <LoadItem
+                                image={item}
+                                selected = {false}
+                                selecteImg={(img)=>{this.setState({selecteImg:img})}}
+                                onPress={()=>this.AdjustPicScreen()}
+                                key={index}
+                            />
+                            }
+                        />        
+                </View>
                 <View style ={styles.bottom}>
                     <View style = {styles.shadow}></View>
                    <View style ={styles.bottomBar}>
@@ -184,7 +219,8 @@ export default class RecommendPic extends React.Component{
         this.props.navigation.navigate("Profile")
     }
     AdjustPicScreen() {
-        this.props.navigation.navigate("AdjustPic")
+        console.log('여기 안가..?')
+        this.props.navigation.navigate("AdjustPic",{selectedImg:this.state.selectedImg})
     }
 }
 
