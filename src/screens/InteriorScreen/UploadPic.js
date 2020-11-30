@@ -76,9 +76,7 @@ export default class UploadPic extends React.Component{
                 alert('사진 선택을 취소했습니다');
             }
             else{
-                //const path = {uri: response.uir}; //갤러리 사진 uri를 this의 img에 넘겨주기
-                console.log('showImagePicker 사진선택 결과')
-                console.log(response);
+
                 const uri = {uri: response.uri};
                 this.setState({img:uri}); 
                 const path = {uri: response.path};

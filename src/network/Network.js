@@ -1,9 +1,6 @@
 import RNFetchBlob from "rn-fetch-blob";
 
 
-/*
-    201030 - feature_user_preference
-*/
 class _Network {
     constructor(){
         this.option = {
@@ -186,12 +183,36 @@ class _Network {
         return this.fetchWrapper(this.link+'/user/show_user_preference',this.option)
     }
     
-    getRecommendImg(){// 아직 안만들어짐. RecommendPic 에서 recommend사진 가져올 때 씀
-        this.option.method='post';
+    getRecommendImg(img){// 아직 안만들어짐. RecommendPic 에서 recommend사진 가져올 때 씀
         this.option.body={
-            id:this.state.ID
+            id:this.state.ID,
+            imageNum:img,
         }
-        return this.fetchWrapper(this.link+'/user/show_preference',this.option)
+        return this.RecommendImageWrapper(this.link+'/user/changed_image_dummy',this.option,img.uri)
+    }
+    RecommendImageWrapper(url,opt,img){//recommend pic 의 image wrapper
+        let fileBody = {
+            name: 'imageNum',
+            filename: img+".jpg",
+            type: "image/jpeg",
+            data: RNFetchBlob.wrap(img)
+        }
+        let id = {
+            name: "id",
+            data: opt.body.id,
+        }
+        return new Promise((res, rej) => {
+            console.log('RecommendImageWrapper fetch전'+opt.body.id)
+            RNFetchBlob.fetch('POST',url,{}, [])//[fileBody,id]
+            .then(resp=>{
+                console.log('사진 fetch성공')
+                res(resp)
+            })
+            .catch(err=>{
+                console.log('사진 fetch 에러')
+                rej(err)
+            })
+        })
     }
     getFurnitureImg(){ //세부인테리어 변경에서 추천 변경 가구 사진들 서버로부터 가져오기
         this.option.method='post';
@@ -344,7 +365,7 @@ class _Network {
         console.log(img1)
         let fileBody1 = {
             name: 'imgFile',
-            filename: img1+".jpg",
+            filename: img1,//+".jpg",
             type: "image/jpeg",
             data: RNFetchBlob.wrap(img1)
         }
@@ -380,13 +401,13 @@ class _Network {
         console.log(img)
         let fileBody1 = {
             name: 'imgFile',
-            filename: img[0].uri+".jpg",
+            filename: img[0].uri,//+".jpg",
             type: "image/jpeg",
             data: RNFetchBlob.wrap(img[0].uri)
         }
         let fileBody2 = {
             name: 'imgFile',
-            filename: img[1].uri+".jpg",
+            filename: img[1].uri,//+".jpg",
             type: "image/jpeg",
             data: RNFetchBlob.wrap(img[1].uri)
         }
@@ -422,19 +443,19 @@ class _Network {
         console.log(img)
         let fileBody1 = {
             name: 'imgFile',
-            filename: img[0].uri+".jpg",
+            filename: img[0].uri,//+".jpg",
             type: "image/jpeg",
             data: RNFetchBlob.wrap(img[0].uri)
         }
         let fileBody2 = {
             name: 'imgFile',
-            filename: img[1].uri+".jpg",
+            filename: img[1].uri,//+".jpg",
             type: "image/jpeg",
             data: RNFetchBlob.wrap(img[1].uri)
         }
         let fileBody3 = {
             name: 'imgFile',
-            filename: img[1].uri+".jpg",
+            filename: img[2].uri,//+".jpg",
             type: "image/jpeg",
             data: RNFetchBlob.wrap(img[2].uri)
         }
@@ -470,25 +491,25 @@ class _Network {
         console.log(img)
         let fileBody1 = {
             name: 'imgFile',
-            filename: img[0].uri+".jpg",
+            filename: img[0].uri,//+".jpg",
             type: "image/jpeg",
             data: RNFetchBlob.wrap(img[0].uri)
         }
         let fileBody2 = {
             name: 'imgFile',
-            filename: img[1].uri+".jpg",
+            filename: img[1].uri,//+".jpg",
             type: "image/jpeg",
             data: RNFetchBlob.wrap(img[1].uri)
         }
         let fileBody3 = {
             name: 'imgFile',
-            filename: img[2].uri+".jpg",
+            filename: img[2].uri,//+".jpg",
             type: "image/jpeg",
             data: RNFetchBlob.wrap(img[2].uri)
         }
         let fileBody4 = {
             name: 'imgFile',
-            filename: img[3].uri+".jpg",
+            filename: img[3].uri,//+".jpg",
             type: "image/jpeg",
             data: RNFetchBlob.wrap(img[3].uri)
         }
@@ -519,8 +540,6 @@ class _Network {
             })
         })
     }
-    
-
 
     VoteBoardImageWrapper(url,opt,img1,img2){// for write to send freeboard post to server   
         let fileBody1 = {
@@ -566,6 +585,7 @@ class _Network {
     sendUserPicImageWrapper(url,opt,img){//조명이 없는 이미지 전송
         let fileBody = {
             name: 'imgFile',
+            filename: img+".jpg",
             type: "image/jpeg",
             data: RNFetchBlob.wrap(img)
         }

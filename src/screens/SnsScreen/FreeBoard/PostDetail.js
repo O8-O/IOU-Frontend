@@ -161,8 +161,7 @@ export default class PostDetail extends React.Component{
         
         return(          
             <View style={styles.container}>
-                <View style={{flex:1}}>
-                    
+                <View style={{flex:1}}>           
                     <View style={styles.post}>
                         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
                         <View>

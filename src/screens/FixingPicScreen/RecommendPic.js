@@ -71,23 +71,9 @@ export default class RecommendPic extends React.Component{
         this.state={
             img : this.props.route.params.img,
             sendImg : this.props.route.params.sendImg,
+            recommendImages : this.props.route.params.recommendImages,
             loadingFinishFlag:false,
         }
-    }
-    
-    getImages(){
-        return Network.getRecommendImg()
-            .then(res=>res.json())
-            .then(resp=>{
-                //resp.result = JSON.stringify(resp.result);
-                this.setState({imgList:resp.result})
-                this.setState({loadingFinishFlag:true})
-                console.log('recommend 사진 가져오기 ok')
-            })
-            .catch(error => {
-                console.log('recommend 사진 가져오기 error')
-                console.log(error)
-            })
     }
     
 
@@ -104,7 +90,7 @@ export default class RecommendPic extends React.Component{
                     //contentContainerStyle={styles.list}
                     numColumns={2}
                     ListHeaderComponent={<View/>}
-                    data={this.state.imgList}
+                    data={this.state.recommendImages}
                     renderItem={({item})=>
                         <LoadItem
                             imageList={item}

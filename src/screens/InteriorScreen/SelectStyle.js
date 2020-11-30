@@ -11,72 +11,91 @@ export default class SelectStyle extends React.Component{
             waitScreen:false,
             img : this.props.route.params.img,
             sendImg: this.props.route.params.sendImg,
+            imgList:null, // 받아온 recommend images
+
             /*spoid*/
             spoid:false,
             selectedColor:null, // 선택된 색
+            dataReceived:false,
         }
     }
     
-    /*테스트 용으로 넣어둔것 . 테스트 뒤 지워 */
-    AdjustPicScreen() {
-        this.props.navigation.navigate("AdjustPic")
-    }
-
-    MainScreen(){
-        this.setState({waitScreen:false})
-        console.log('색상'+this.state.selectedColor)
-
-        this.props.navigation.navigate("MainBoard")
-    }
-    FreeBoard() {
-        this.props.navigation.navigate("FreeBoard")
-    }
-    RecommendPic(){
-        this.props.navigation.navigate("RecommendPic",{img:this.state.img,sendImg:this.state.sendImg});
-    }
-    ProfileScreen(){
-        this.props.navigation.navigate("Profile")
-    }
-    sendPic(){
+    async sendPic(){
         if(this.state.selectedColor == null){
             console.log('selectstyle/sendPic 선택된 조명 색상은 없음')
-            return Network.sendUserPic(this.state.sendImg)
-            .then(res=>res.json())//blob())   blob이나 arrayBuffer는 이미지,파일같은 data에 사용.
-            .then(resp=>{
+            try {
+                const res = await Network.sendUserPic(this.state.sendImg);
+                const resp = res.json();
                 console.log("sendPic if 결과");
-                console.log(resp)
-            })
-            .catch(error => {
+                console.log(resp);
+                this.callGetRecommendData(); // 결과 받는 함수 시작
+            } catch (error) {
                 console.log("sendPic if 실패");
-                console.log(error)
-            })
+                console.log(error);
+            }
         }
         else{
             console.log('selectstyle/sendPic 선택된 조명 색상은 : ')
             console.log(this.state.selectedColor)
-            return Network.sendUserPicWithLight(this.state.sendImg,this.state.selectedColor)
-            .then(res=>res.json())
-            .then(resp=>{
+            try {
+                const res_1 = await Network.sendUserPicWithLight(this.state.sendImg, this.state.selectedColor);
+                const resp_1 = res_1.json();
                 console.log("sendPic else 결과");
-                console.log(resp)
-            })
-            .catch(error => {
+                console.log(resp_1);
+                this.callGetRecommendData(); // 결과 받는 함수 시작
+            } catch (error_1) {
                 console.log("sendPic else 실패");
-                console.log(error)
-            })
+                console.log(error_1);
+            }
         }
 
     }
-    timer() {
-        //this.setState({waitScreen:true});
-        console.log('이미지 주소 : '+this.state.sendImg);
-        this.sendPic();//서버로 사진 전송하고 결과 기다렸다 받기.
-        //setTimeout(
-        //    () => {this.setState({waitScreen:false}),this.RecommendPic()}
-        //    , 1000);//1sec
+
+    async callGetRecommendData(){
+        console.log('callGetRecommendData 시작')
+        this.getRecommendData();
+        /*while(!this.state.dataReceived){ //이거 그대로 쓰면 에러. while계속 돌아감
+            console.log('while문 안에 들어갔음')
+            setTimeout(() => {this.getRecommendData()}, 10000);//10sec
+        }*/
+
+        //recommend pic오면 화면 이동
+        //this.RecommendPic();
     }
 
+    async getRecommendData(){
+        try {
+            console.log('getRecommendData 시작')
+            const res = await Network.getRecommendImg(this.state.sendImg);
+            const resp = res.json();
+            this.setState({dataReceived:true});
+            this.setState({waitScreen:false});//modal 끄기
+            this.setState({ imgList: resp.result });
+
+            console.log('getRecommendData 사진 가져오기 ok');
+            console.log(this.state.imgList)
+            
+
+        } catch (error) {
+            console.log('recommend 사진 가져오기 error');
+            console.log(error);
+        }
+    }
+
+    RecommendPic(){
+        this.props.navigation.navigate("RecommendPic",
+        {img:this.state.img,sendImg:this.state.sendImg,recommendImages:this.state.imgList});
+
+    }
+    componentDidMount(){
+        console.log("this.state.img")
+        console.log(this.state.img);
+        console.log("this.state.sendImg")
+        console.log(this.state.sendImg)
+    }
+    
     render(){
+        
         return(
             <View style={{flex:1}}> 
                 <View style={styles.board}>
@@ -106,12 +125,9 @@ export default class SelectStyle extends React.Component{
                             
                         <TouchableOpacity 
                             style={{ marginLeft:210, marginTop:160}}
-                            //onPress={()=>{this.AdjustPicScreen()}}>
-                            onPress={()=>{this.timer()}}>
+                            //onPress={()=>{this.timer()}}>  
+                            onPress={()=>{this.sendPic()}}>
                             
-                            
-                            
-             
                             <Image
                                 style={{width:120,height:46,resizeMode:'contain'}}
                                 source={require("../../../assets/img/nextButton.png")}
@@ -169,6 +185,23 @@ export default class SelectStyle extends React.Component{
                 </View>
             </View>
         );
+    }
+
+    /*테스트 용으로 넣어둔것 . 테스트 뒤 지워 */
+    AdjustPicScreen() {
+        this.props.navigation.navigate("AdjustPic")
+    }
+
+    MainScreen(){
+        this.setState({waitScreen:false})
+        this.props.navigation.navigate("MainBoard")
+    }
+    FreeBoard() {
+        this.props.navigation.navigate("FreeBoard")
+    }
+    
+    ProfileScreen(){
+        this.props.navigation.navigate("Profile")
     }
 }
 

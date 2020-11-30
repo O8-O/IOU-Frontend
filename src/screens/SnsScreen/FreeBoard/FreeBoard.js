@@ -3,6 +3,7 @@ import {View,StyleSheet,Text,Image,TouchableOpacity, ScrollView } from "react-na
 import PostFeed from "./PostFeed";
 import TopNavigation from "../TopNavigation";
 import Network from'../../../network/Network';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default class FreeBoard extends React.Component{
     constructor(props) {
@@ -14,15 +15,17 @@ export default class FreeBoard extends React.Component{
             isFetching:false,
         }
     }
-
+    useFocusEffect(){
+        
+    }
     PostFeedScreen(){
         return(
             <PostFeed 
                 navigation={this.state.navigation}
                 />      
-        )
-        
+        ) 
     }
+
     render(){
         return(
             <View style={styles.container}>

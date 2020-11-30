@@ -13,6 +13,8 @@ export default class Posting extends React.Component{
     }
     async numToImg1(num){   
         try {
+            console.log("posting에서 numtoimg1들어가기 전 picForDetail은 비어있어야 함")
+            console.log(this.state.picForDetail)
             const resp = await Network.numToImg(num);
             var uri = { uri: resp.url };
             var temp = this.state.picForDetail.concat(uri);
@@ -25,6 +27,8 @@ export default class Posting extends React.Component{
     }
     async numToImg2(num){    
         try {
+            console.log("posting에서 numtoimg2들어가기 전 picForDetail은 비어있어야 함")
+            console.log(this.state.picForDetail)
             const resp = await Network.numToImg(num[0]);
             var uri = { uri: resp.url };
             var temp = this.state.picForDetail.concat(uri);
@@ -42,6 +46,10 @@ export default class Posting extends React.Component{
     }
     async numToImg3(num){    
         try {
+            console.log("posting에서 numtoimg3들어가기 전 picForDetail은 비어있어야 함")
+            console.log(this.state.picForDetail)
+            console.log('NW> num To img 3 의 num은 ')
+            console.log(num)
             const resp = await Network.numToImg(num[0]);
             var uri = { uri: resp.url };
             var temp = this.state.picForDetail.concat(uri);
@@ -64,6 +72,8 @@ export default class Posting extends React.Component{
     }
     async numToImg4(num){    
         try {
+            console.log("posting에서 numtoimg4들어가기 전 picForDetail은 비어있어야 함")
+            console.log(this.state.picForDetail)
             const resp = await Network.numToImg(num[0]);
             var uri = { uri: resp.url };
             var temp = this.state.picForDetail.concat(uri);
@@ -79,7 +89,7 @@ export default class Posting extends React.Component{
             var temp_2 = this.state.picForDetail.concat(uri_2);
             this.setState({ picForDetail: temp_2 });
 
-            const resp_3 = await Network.numToImg(num[2]);
+            const resp_3 = await Network.numToImg(num[3]);
             var uri_3 = { uri: resp_3.url };
             var temp_3 = this.state.picForDetail.concat(uri_3);
             this.setState({ picForDetail: temp_3 });
@@ -108,14 +118,6 @@ export default class Posting extends React.Component{
         })      
     }*/
     
-
-
-    readyToDrawPicture(i,num){    
-        if(i ==(num.length-1)){//for문 다 돌았다면 화면에 사진 그려주기
-            console.log("posting > num to img됐으니까 화면에 그린다. i 는 "+ i )
-            this.setState({pictureFlag:true})
-        }
-    }
     pictureSpace(){
         if(this.state.pictureFlag){
             if((this.state.data.contentImage == null)){

@@ -122,7 +122,8 @@ export default class Write extends React.Component{
 
 
     pictures(){
-        if(this.state.imgFiles == require('../../../../assets/img/addPicture.png')){
+        if((this.state.imgFiles == require('../../../../assets/img/addPicture.png'))
+                || ( this.state.imgFiles ==null)){
             return(
                 <Image
                     style={{marginTop:2, width:182.7, height:110.25,resizeMode:'contain'}}
