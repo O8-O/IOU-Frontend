@@ -8,7 +8,8 @@ export default class Furnitures extends React.Component{
         super(props);
         this.state={
             loadingFinishFlag:false,
-            imgList:null,
+            selectedImgData:this.props.route.params.selectedImgData,
+            selectedImg:null,
         }
     }
     
@@ -60,8 +61,22 @@ export default class Furnitures extends React.Component{
             )
         }   
     }
+    async numToImg(){   
+        try {
+            console.log("Furnitures에서 numtoimg들어가기 전 selectedImg은 비어있어야 함")
+            console.log(this.state.selectedImg)          
+            const resp = await Network.numToImg(this.state.selectedImgData.imageNum);
+            var uri = { uri: resp.url };
+            this.setState({ selectedImg: uri });
+            this.setState({pictureFlag:true});
+        } catch (err) {
+            console.log("callNumToInt 에러!!");
+            console.log(err);
+        }
+    }
+
     componentDidMount(){
-        this.getFurnitureImages()
+        this.numToImg()
     }
     
     render(){

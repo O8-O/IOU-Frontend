@@ -10,6 +10,9 @@ export default class AdjustPic extends React.Component{
             id:"",
             closeUp:false,//사진 확대
             selectedFurniture:'',
+            selectedImgData:this.props.route.params.selectedImgData,
+            selectedImg:null,
+            pictureFlag:false,
         }
     }
     
@@ -27,31 +30,37 @@ export default class AdjustPic extends React.Component{
             })
     }
 
-
-    makeModal(image){
-        <Modal //이거 쓸거
-            visible={this.state.closeUp} 
-            transparent={true}
-            onRequestClose={() => { this.setState({closeUp:false}) } }//뒤로가기 누르면 사라짐.
-            animationType="slide">
-            <TouchableOpacity style={{justifyContent:'center', backgroundColor:'rgba(0,0,0,0.7)',flex:1,}}
-            onPress={()=>this.setState({closeUp: false}) }> 
-                <View style={{ height:400, alignItems:'center'}}>
-                    <Image
-                        style={{width:'100%',height:'100%',resizeMode:'contain'}}
-                        source= {image}
-                    />
-                </View>  
-            </TouchableOpacity>                   
-        </Modal> 
+    pictureSpace(){
+        if(this.state.pictureFlag){
+            return(
+                <Image 
+                    style={{width:'100%',height:'100%',resizeMode:'contain',}}
+                    source={this.state.selectedImg}//{this.state.img}/>
+                />
+            )
+        }
+        
     }
-    getId(){
-        this.setState({id : Network.getNetworkId()})    
+
+    async numToImg(){   
+        try {
+            console.log("AdjustPic에서 numtoimg들어가기 전 picForDetail은 비어있어야 함")
+            console.log(this.state.selectedImg)   
+            console.log(this.state.selectedImgData)       
+            const resp = await Network.numToImg(this.state.selectedImgData.imageNum);
+            var uri = { uri: resp.url };
+            this.setState({ selectedImg: uri });
+            this.setState({pictureFlag:true});
+        } catch (err) {
+            console.log("callNumToInt 에러!!");
+            console.log(err);
+        }
     }
 
     componentDidMount(){
-        this.getId()
+        this.numToImg()
     }
+
     render(){
         return(
             <View style={{flex:1}}> 
@@ -67,10 +76,7 @@ export default class AdjustPic extends React.Component{
                         >벽, 바닥, 가구의 세부 디자인들을 확인해보세요! 
                         </Text>
                         <View style={{marginTop:30,height:450}}>
-                            <Image 
-                                style={{width:'100%',height:'100%',resizeMode:'contain',}}
-                                source={require('../../../assets/img/interior(83).jpg')}//{this.state.img}/>
-                                />
+                            {this.pictureSpace()}
                         </View>      
 
                         <TouchableOpacity  
@@ -134,7 +140,7 @@ export default class AdjustPic extends React.Component{
         this.props.navigation.navigate("Preference")
     }
     FurnituresScreen(){
-        this.props.navigation.navigate("Furnitures")
+        this.props.navigation.navigate("Furnitures",{selectedImgData:this.state.selectedImgData})
     }
 }
 

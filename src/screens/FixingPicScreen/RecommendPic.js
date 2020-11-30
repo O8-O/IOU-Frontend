@@ -42,6 +42,7 @@ class LoadItem extends React.Component{//imageList
     }
     press(){
         console.log('RecommendPic > press누름')
+        console.log(this.state.image)
         this.props.selecteImg(this.state.image)
         this.props.onPress()
     }
@@ -70,15 +71,17 @@ class LoadItem extends React.Component{//imageList
                         source= {require("../../../assets/img/closeUp.png")}
                     />
                 </TouchableOpacity>
+
                 <Modal 
                     visible={this.state.closeUp} 
                     transparent={true}
                     onRequestClose={() => { this.setState({closeUp:false}) } }//뒤로가기 누르면 사라짐.
                     animationType="slide">
-                    <View style={{justifyContent:'center', backgroundColor:'rgba(0,0,0,0.7)',flex:1,}}> 
-                        <View style={{ width:'100%', alignItems:'center',backgroundColor:'white'}}>
+                    <View style={{justifyContent:'center', backgroundColor:'rgba(0,0,0,0.7)',flex:1,}}
+                        onPress={()=>this.setState({closeUp: false}) }> 
+                        <View style={{ height:400, alignItems:'center'}}>
                             <Image
-                                    style={{width:336,height:223.2,resizeMode:'contain'}}
+                                    style={{width:'100%',height:'100%',resizeMode:'contain'}}
                                     source= {this.state.picForDetail}
                             />
                         </View>                       
@@ -98,17 +101,16 @@ export default class RecommendPic extends React.Component{
     constructor(props) {
         super(props);
         this.state={
-            img : this.props.route.params.img,
-            sendImg : this.props.route.params.sendImg,
+            image : this.props.route.params.image,
+            //sendImg : this.props.route.params.sendImg,
             recommendImages : this.props.route.params.recommendImages,
             loadingFinishFlag:false,
             selectedImg:null,
         }
     }
     
-/*
+    /*
     getRecommendScreen(){
-
             console.log('플랫리스트를 그려')
             console.log(this.state.imgList)
             return(             
@@ -149,7 +151,7 @@ export default class RecommendPic extends React.Component{
                         원본 이미지</Text>
                     <Image 
                         style={{marginTop:2, width:290, height:175,resizeMode:'contain'}}
-                        source={this.state.img}/>
+                        source={this.state.image}/>
                     <Text style={{fontFamily:'NanumSquare_acR',fontSize:15,marginTop:50,marginBottom:10}}>
                         변형된 이미지들의 추천 목록입니다 </Text>
                         <FlatList
@@ -162,7 +164,9 @@ export default class RecommendPic extends React.Component{
                             <LoadItem
                                 image={item}
                                 selected = {false}
-                                selecteImg={(img)=>{this.setState({selecteImg:img})}}
+                                selecteImg={(img)=>{this.setState({selectedImg:img},
+                                    ()=>console.log('setstate뒤 selecteImg값은 :'+this.state.selectedImg)
+                                    )}}
                                 onPress={()=>this.AdjustPicScreen()}
                                 key={index}
                             />
@@ -220,7 +224,9 @@ export default class RecommendPic extends React.Component{
     }
     AdjustPicScreen() {
         console.log('여기 안가..?')
-        this.props.navigation.navigate("AdjustPic",{selectedImg:this.state.selectedImg})
+        console.log('adjust pic가기 전 selectedimg 뭔지 체크')
+        console.log(this.state.selectedImg)
+        this.props.navigation.navigate("AdjustPic",{selectedImgData:this.state.selectedImg})
     }
 }
 
