@@ -1,13 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+//import AsyncStorage from '@react-native-community/async-storage';
+//npm i @react-native-async-storage/async-storage
+
 var resImageKey = "RES_IMAGE_KEY";
 var reqImageKey = "REQ_IMAGE_KEY";
 
-function saveImageData(imageNameList, changedInfor) {
+function saveImageData(_result){// (imageNameList, changedInfor) {//추천받은 정보에 대해서 저장
     return new Promise((res, rej) => {
         try{
+            const result = JSON.stringify(_result)
             AsyncStorage.setItem(resImageKey, {
-                imageNameList: imageNameList,
-                changedInfor: changedInfor
+                imageResult: result
             }, () => {
                 res();
             });
@@ -32,11 +35,12 @@ function callImageData() {
     });
 }
 
-function saveReqData(imageName) {
+function saveReqData(_imageNum) {//client가 요청한 정보에 대해서 저장하고 있습니다
     return new Promise((res, rej) => {
         try{
-            AsyncStorage.setItem(reqImageKey, {
-                reqName: imageName
+            const imageNum = JSON.stringify(_imageNum)
+            AsyncStorage.setItem(reqImageKey, {//setItem 으로 저장함
+                reqNum: imageNum
             }, () => {
                 res();
             });
@@ -50,7 +54,7 @@ function saveReqData(imageName) {
 
 function callReqData() {
     return new Promise((res, rej) => {
-        AsyncStorage.getItem(reqImageKey, (err, value) => {
+        AsyncStorage.getItem(reqImageKey, (err, value) => {//getItem 으로 불러옴 
             if(err == null) {
                 res(JSON.parse(value));
             }
@@ -61,43 +65,25 @@ function callReqData() {
     });
 }
 
-// At recommand screen`s method...
-class screen {
-    componentDidMount() {
-        callReqData().then((value) => {
-            if(value.reqName == null || value.reqName.length == 0) {
-                // 요청한 데이터가 있습니다.
-                callImageData().then((value) => {
-                    if(value.imageNameList.length == 0) {
-                        // 요청 데이터가 있고, 결과가 오긴 했지만 아직 결과가 저장되지 않았습니다.
-                        // 대기 메시지 출력
-                    }
-                    else {
-                        // 요청 데이터에 대한 결과가 왔습니다. -> 결과창으로 이동
-                    }
-                })
-            }
-            else {
-                // 이미 요청한게 있습니다.
-                // 대기 메시지 출력.
-            }
-        });
-    }
+function onRequestUpload(imageNum) {//REQUEST보낼땐 이거 사용
+        // 
+    // ...
 
-    onRequestUpload() {
-        // ...
+    saveImageData("");
+    saveReqData(imageNum);
+}
 
-        saveImageData("", {});
-        saveReqData("Requested/Image/Data.jpg");
-    }
-
-    onResult() {
-        // ...
-
-        saveImageData(
-            ["recommend1.jpg","recommend2.jpg","recommend3.jpg"], 
-            {"색이 어쩌고 한 정보 저장" : "#2347CD"}
-        );
+function onResult(_result) {//결과가 있어서 결과를 받을때에는 이거 사용.
+//imagedata에는 결과 넣어주고 요청은 해결했으니까 ""으로 초기화.
+// ...
+    saveImageData(_result);
+    saveReqData("");
+}
+function clearAll() {//결과가 있어서 결과를 받을때에는 이거 사용.
+    //imagedata에는 결과 넣어주고 요청은 해결했으니까 ""으로 초기화.
+    // ...
+        saveImageData("");
         saveReqData("");
     }
-}
+
+export{ callImageData,callReqData,onRequestUpload,onResult,clearAll};

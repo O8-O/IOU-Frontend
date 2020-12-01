@@ -3,7 +3,7 @@ import {View,StyleSheet,Image,Text, Modal,TouchableOpacity } from "react-native"
 import CheckBox from './CheckBox';
 import LightBox from './LightBox';
 import Network from'../../network/Network';
-
+import {onRequestUpload,onResult} from "../../components/SaveData";
 export default class SelectStyle extends React.Component{
     constructor(props){
         super(props);
@@ -31,6 +31,8 @@ export default class SelectStyle extends React.Component{
                 const resp = res.json();
                 console.log("sendPic if 결과");
                 console.log(resp.result);
+                onRequestUpload(resp.result)
+
                 this.setState({imageNum:resp.result},
                     ()=>{this.callGetRecommendData()})// 결과 받는 함수 시작
             } catch (error) {
@@ -48,6 +50,7 @@ export default class SelectStyle extends React.Component{
                 const resp_1 = res_1.json();
                 console.log("sendPic else 결과");
                 console.log(resp_1.result);
+
                 this.setState({imageNum:resp_1.result},
                     ()=>{this.callGetRecommendData()})// 결과 받는 함수 시작
             } catch (error_1) {
@@ -84,6 +87,9 @@ export default class SelectStyle extends React.Component{
             const resp = await res.json();
             console.log("selectstyle > getrecommend data 결과")
             console.log(resp.result)
+
+            onResult(resp.result)//asyncStorage에 저장
+
             this.setState({resultFlag:resp.result})
             if(resp.result){
                 this.setState({dataReceived:true});
@@ -107,7 +113,7 @@ export default class SelectStyle extends React.Component{
 
     RecommendPic(){
         this.props.navigation.navigate("RecommendPic",
-        {image:this.state.img,/*sendImg:this.state.sendImg,*/recommendImages:this.state.imgList});
+        {image:this.state.img,recommendImages:this.state.imgList});
 
     }
     componentDidMount(){
@@ -115,6 +121,7 @@ export default class SelectStyle extends React.Component{
         console.log(this.state.img);
         console.log("this.state.sendImg")
         console.log(this.state.sendImg)
+        Network.saveSelectedPicture(this.state.img);
     }
     
     render(){

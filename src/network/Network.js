@@ -13,7 +13,9 @@ class _Network {
         };
 
         this.state = {
-            ID:""
+            ID:"",
+            NetworkSelectedPic:"",
+            NetWorkRecommendResult:"",
         };
         this.link = 'http://code-giraffe.iptime.org:35000';
         this.pictureLink = 'http://code-giraffe.iptime.org:35001';
@@ -21,6 +23,12 @@ class _Network {
     }
     getNetworkId(){
         return this.state.ID
+    }
+    getNetworkSelectedPic(){
+        return this.state.NetworkSelectedPic
+    }
+    saveSelectedPicture(img){
+        this.state.NetworkSelectedPic=img;
     }
     requirePwChange(_email,_pw){
         this.option.method='post';

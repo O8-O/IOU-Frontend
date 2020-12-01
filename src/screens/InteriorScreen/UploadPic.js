@@ -1,6 +1,8 @@
 import React from "react";
 import {View,StyleSheet,Image,Text,Modal, TouchableOpacity } from "react-native";
 import ImagePicker from 'react-native-image-picker';
+import {callImageData,callReqData} from "../../components/SaveData";
+import Network from "../../network/Network";
 
 export default class UploadPic extends React.Component{
     constructor(props) {
@@ -11,6 +13,8 @@ export default class UploadPic extends React.Component{
             visible: false,
             img: require('../../../assets/img/addPicture.png'), // img = uri라고 보면 될듯.
             sendImg:'',
+            
+            /*다른 화면 이동 용 */
         }
     }
 
@@ -29,7 +33,9 @@ export default class UploadPic extends React.Component{
     ProfileScreen(){
         this.props.navigation.navigate("Profile")
     }
-    
+    WaitScreen(){
+        this.props.navigation.navigate("Wait")
+    }
     SelectStyleScreen() {
         this.props.navigation.navigate("SelectStyle",{img:this.state.img,sendImg:this.state.sendImg});
     }
@@ -87,6 +93,52 @@ export default class UploadPic extends React.Component{
  
     }
 
+    RecommendPic(selectedPic,_imgList){
+        this.props.navigation.navigate("RecommendPic",
+        {image:selectedPic, recommendImages:_imgList});
+    }
+
+    componentDidMount() {
+        callReqData().then((value) => {
+        if(value !=null){
+            if(value.reqNum == null || value.reqNum.length == 0) {
+                console.log('난 처음 들어왔어')
+                //1. 요청한 데이터의 결과가 나와서 요청이 없어지거나 
+                //2. 아예 요청한 적이 없는 상태
+                callImageData().then((value) => {
+                    if(value.imageResult == null){//앱 처음 들어온 상태
+                        console.log('난 처음 들어왔어')
+                    }
+                    else if(value.imageResult.length == 0) {
+                        console.log('난 둘다 없는데 기다리는 중이야')
+                        this.WaitScreen();
+                    }
+                    else {// 요청 데이터에 대한 결과가 왔습니다. -> 결과창으로 이동
+                        console.log('난 결과왔어')
+                        return Network.getNetworkSelectedPic() // 
+                        .then((_resp1)=>{
+                            const resp1 = _resp1;
+                            return callImageData()
+                            .then((resp2)=>{
+                                console.log("upload / resp1은 :"+resp1+"resp2는 : "+resp2)
+                                this.RecommendPic(resp1,resp2) 
+                            })
+                        })   
+                    }
+                })
+            }
+            else {//요청한 데이터가 있는데, 요청 데이터가 아직 안온 경우입니다
+                // 대기 메시지 출력.
+                this.WaitScreen();
+            }
+        }
+        else{
+            console.log('value가 null이야')
+        }
+        });
+    }
+
+    
     
     render(){
         return(
@@ -113,33 +165,19 @@ export default class UploadPic extends React.Component{
 
                     <Modal
                         visible={this.state.visible} 
-                        transparent={true}
-                        modalStyle={{backgroundColor:'yellow', borderRadius: 15}}
                         animationType="slide"> 
-                        <View style={styles.modalBackground}>
-                            <View style={styles.modalBox}>
-                                <Text style={{padding:20,fontFamily:'NanumSquare_acR', fontSize:20}}>
-                                    분석한 내용이 모두 사라집니다.  계속 진행하시겠습니까?
-                                </Text>
-                                <View style={{marginTop:15, flexDirection:'row',justifyContent:'space-between'}}>
-                                    <TouchableOpacity 
-                                        onPress = {() => this.setState({visible: false})}>
-                                        <Image
-                                            style={{width:120, height:50, resizeMode:'contain'}}
-                                            source={require("../../../assets/img/cancelButton.png")}/>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                         onPress = {() => this.setState({
-                                             visible: false, 
-                                             selectPic:false,
-                                             img: require('../../../assets/img/addPicture.png')})}>
-                                        <Image
-                                            style={{width:120, height:50, resizeMode:'contain'}}
-                                            source={require("../../../assets/img/deleteButton.png")}/>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        </View>
+                        <View style={{alignItems:'center',marginTop:270}}>
+                            <Text style={{fontFamily:'NanumSquare_acB',fontSize:18}}>
+                                분석이 완료되면 알려드릴게요!
+                            </Text>
+                            <TouchableOpacity
+                                style={{marginTop:40}}
+                                onPress={()=>{this.MainScreen()}}>
+                                <Image
+                                    style={{width:183,height:60,resizeMode:'contain'}}
+                                    source={require("../../../assets/img/goToMainButton.png")}/>
+                            </TouchableOpacity>
+                        </View>                        
                     </Modal>
 
                 </View>

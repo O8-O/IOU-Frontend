@@ -29,6 +29,7 @@ import VoteWrite from '../screens/SnsScreen/VoteBoard/VoteWrite';
 
 /*사진 편집 */
 import UploadPic from '../screens/InteriorScreen/UploadPic';
+import Wait from '../screens/InteriorScreen/Wait';
 import SelectStyle from '../screens/InteriorScreen/SelectStyle';
 import RecommendPic from '../screens/FixingPicScreen/RecommendPic';
 import AdjustPic from '../screens/FixingPicScreen/AdjustPic';
@@ -70,6 +71,7 @@ import Furnitures from '../screens/FixingPicScreen/Furnitures';
                     <Stack.Screen name="ChangePw" component={ChangePw} options={{headerShown: false}}/>
                     <Stack.Screen name="SelectedPic" component={SelectedPic} options={{headerShown: false}}/>
                     
+                    <Stack.Screen name="Wait" component={Wait} options={{headerShown: false}}/>
                 </Stack.Navigator>
           );
     } 

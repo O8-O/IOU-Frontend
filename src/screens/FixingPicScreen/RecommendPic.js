@@ -2,6 +2,8 @@ import React from "react";
 import {View,StyleSheet,Text,Image,TouchableOpacity, Modal, ScrollView } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import Network from'../../network/Network';
+import {clearAll} from "../../components/SaveData";
+
 class LoadItem extends React.Component{//imageList
     constructor(props) {
         super(props);
@@ -165,10 +167,8 @@ export default class RecommendPic extends React.Component{
                                 image={item}
                                 selected = {false}
                                 selecteImg={(img)=>{this.setState({selectedImg:img},
-                                    //()=>console.log('setstate뒤 selecteImg값은 :'+this.state.selectedImg),
                                     ()=>this.AdjustPicScreen()
                                     );}}
-                                //AdjustPicScreen={()=>this.AdjustPicScreen()}
                                 key={index}
                             />
                             }

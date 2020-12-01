@@ -138,7 +138,7 @@ export default class Posting extends React.Component{
                 console.log("")
                 return(
                     <Image
-                        style={{backgroundColor:'pink', width:290, height:150 /*resizeMode:'contain'*/}}
+                        style={{backgroundColor:'white', width:290, height:150 /*resizeMode:'contain'*/}}
                         source={this.state.picForDetail[0]}
                     />
                 )
