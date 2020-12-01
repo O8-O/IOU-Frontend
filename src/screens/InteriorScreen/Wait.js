@@ -5,8 +5,7 @@ export default class Wait extends React.Component{
     constructor(props){
         super(props);
         this.state={
-            waitScreen:false,
-            img : this.props.route.params.img,
+            waitScreen:true,
         }
     }
 

@@ -67,13 +67,14 @@ export default class SelectStyle extends React.Component{
 
         console.log('timeout끝');
         this.getRecommendData()
-        await delay(30000);
-        while(!this.state.resultFlag){
-            this.getRecommendData()
+        await delay(20000);
+        while(!this.state.dataReceived){
             await delay(10000);
+            this.getRecommendData()
             console.log('timeout2끝');
             
         }
+        console.log("데이터 그만 받아와")
         
         
     }
@@ -90,7 +91,7 @@ export default class SelectStyle extends React.Component{
 
             onResult(resp.result)//asyncStorage에 저장
 
-            this.setState({resultFlag:resp.result})
+            //this.setState({resultFlag:resp.result})
             if(resp.result){
                 this.setState({dataReceived:true});
                 console.log('getRecommendData 받아옴~')
@@ -112,17 +113,12 @@ export default class SelectStyle extends React.Component{
     }
 
     RecommendPic(){
+        console.log("나 recommend pic화면으로 넘어간다!!!!!!!!!!!!!!!")
         this.props.navigation.navigate("RecommendPic",
         {image:this.state.img,recommendImages:this.state.imgList});
 
     }
-    componentDidMount(){
-        console.log("this.state.img")
-        console.log(this.state.img);
-        console.log("this.state.sendImg")
-        console.log(this.state.sendImg)
-        Network.saveSelectedPicture(this.state.img);
-    }
+
     
     render(){
         

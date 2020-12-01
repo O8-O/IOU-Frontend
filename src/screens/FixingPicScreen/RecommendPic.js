@@ -49,11 +49,10 @@ class LoadItem extends React.Component{//imageList
         //this.props.AdjustPicScreen()
     }
     componentDidMount(){
+        console.log("recommend data num to int로 바꾸자!!!")
         this.numToImg()
     }
     render() {
-        //const lineColor = this.state.selected == true ? '#419DFF' : '#F1F0EE';
-        console.log('selected'+this.state.selected)
         return (
             <View >
                 <TouchableOpacity
@@ -110,52 +109,38 @@ export default class RecommendPic extends React.Component{
             selectedImg:null,
         }
     }
-    
-    /*
-    getRecommendScreen(){
-            console.log('플랫리스트를 그려')
-            console.log(this.state.imgList)
-            return(             
-                <FlatList
-                    //contentContainerStyle={styles.list}
-                    numColumns={2}
-                    //ListHeaderComponent={<View/>}
-                    data={this.state.recommendImages}
-                    keyExtractor={(item, index) => 'key'+index}
-                    renderItem={({item,index})=>
-                        <LoadItem
-                            imageList={item}
-                            selected = {false}
-                            onPress={()=>this.AdjustPicScreen()}
-                            key={index}
-                        />
-                    }
-                    //keyExtractor={item=>JSON.stringify(item.imageNum)}
-                    //extraData={this.state.imgList.selected}
-                    //ListFooterComponent={<View/>}
-                />  
-            )
-        //}   
+    clear(){
+        clearAll();
+        this.InteriorScreen();
     }
-    */
     componentDidMount(){
-
+        console.log('받은 recommend dadta는')
+        console.log(this.state.recommendImages)
     }
     
     render(){
         return(
             <View style={styles.container}>
                 <View style ={styles.board}> 
-                    <Text style={[styles.title,{marginTop:40}]}>
-                        사용자의 선호도를 바탕으로 변형한 </Text>
-                    <Text style={[styles.title,{marginBottom:10}]}>이미지입니다.</Text>
-                    <Text style={{fontFamily:'NanumSquare_acR',fontSize:15,marginTop:15}}>
+                    <Text style={[styles.title,{marginTop:30}]}>
+                        선호도를 바탕으로 변경한 결과입니다</Text>
+                    
+                    <Text style={{fontFamily:'NanumSquare_acR',fontSize:15,marginTop:25,marginBottom:10}}>
                         원본 이미지</Text>
                     <Image 
-                        style={{marginTop:2, width:290, height:175,resizeMode:'contain'}}
+                        style={{alignSelf:'center', marginTop:2, width:290, height:175,resizeMode:'contain'}}
                         source={this.state.image}/>
-                    <Text style={{fontFamily:'NanumSquare_acR',fontSize:15,marginTop:50,marginBottom:10}}>
-                        변형된 이미지들의 추천 목록입니다 </Text>
+                    <TouchableOpacity  
+                        style={styles.nextButton}
+                        activeOpacity={0.8}
+                        onPress={()=>{this.clear()}}
+                    >
+                        <Text  style = {{fontFamily:'NanumSquare_acR',fontSize:15, color: "white"}}>
+                            다른 사진으로 바꾸기 
+                        </Text>
+                    </TouchableOpacity> 
+                    <Text style={{fontFamily:'NanumSquare_acR',fontSize:15,marginTop:20,marginBottom:10}}>
+                        변경된 이미지들의 추천 목록입니다 </Text>
                         <FlatList
                             //contentContainerStyle={styles.list}
                             numColumns={2}
@@ -246,7 +231,18 @@ const styles = StyleSheet.create({
     },
     title:{
         fontFamily:'NanumSquare_acB',
-        fontSize:20,
+        fontSize:22,
+    },
+    nextButton: {
+        width:140,
+        height:30,
+        borderRadius: 5,
+        marginTop:15,
+        alignSelf:'center',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#FF7E76',
+        elevation: 5,//이건 안드로이드 그림자
     },
     bottom:{
         height:50,

@@ -67,6 +67,9 @@ export default class AdjustPic extends React.Component{
     }
 
     render(){
+        const wallColor = this.state.selectedImgData.data.wallColor;
+        const floorColor = this.state.selectedImgData.data.floorColor;
+        const lightColor = this.state.selectedImgData.data.lightColor;
         return(
             <View style={{flex:1}}> 
                 <View style={styles.board}>
@@ -83,14 +86,24 @@ export default class AdjustPic extends React.Component{
                         <View style={{marginTop:30,height:450}}>
                             {this.pictureSpace()}
                         </View>      
-
+                        <View style={{flexDirection:'row',justifyContent:'center'}}>
+                            <View style={{flexDirection:'row',alignContent:'center'}}>
+                                <Text style={{marginRight:5,color:wallColor}}>벽 색상</Text>
+                            </View>
+                            <View style={{flexDirection:'row',alignContent:'center'}}>
+                                <Text style={{marginRight:5,color:floorColor}}>바닥 색상</Text>                  
+                            </View>
+                            <View style={{flexDirection:'row',alignContent:'center'}}>
+                                <Text style={{marginRight:5,color:lightColor}}>조명 색상</Text>
+                            </View>
+                        </View>
                         <TouchableOpacity  
                             style={styles.nextButton}
                             activeOpacity={0.8}
                             onPress={()=>{this.FurnituresScreen()}}
                         >
                             <Text  style = {{fontFamily:'NanumSquare_acR',fontSize:16, color: "white"}}>
-                                더 많은 변형 결과 보러가기
+                                더 많은 변경 결과 보러가기
                             </Text>
                         </TouchableOpacity>            
                     </View>                 

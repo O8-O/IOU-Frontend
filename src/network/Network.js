@@ -21,15 +21,35 @@ class _Network {
         this.pictureLink = 'http://code-giraffe.iptime.org:35001';
         this.header= { "Content-Type": "multipart/form-data" };//파일들은 fetch할 때 다른 header필요한듯
     }
+
     getNetworkId(){
-        return this.state.ID
+        return this.state.ID;
     }
-    getNetworkSelectedPic(){
-        return this.state.NetworkSelectedPic
+    getSelectedPic(){
+        console.log("NW 안의 this.state.getNetworkSelectedPic 은");
+        console.log(this.state.getNetworkSelectedPic);
+        return this.state.NetworkSelectedPic;
     }
+
     saveSelectedPicture(img){
         this.state.NetworkSelectedPic=img;
+        this.state.NetWorkRecommendResult="";
     }
+
+    getNetWorkRecommendResult(){
+        return this.state.NetworkSelectedPic;
+    }
+    getNetWorkRecommendResult(img){
+        this.state.NetWorkRecommendResult=img;
+        this.state.NetworkSelectedPic="";
+    }
+
+    dataClear(){
+        this.state.NetWorkRecommendResult="";
+        this.state.NetworkSelectedPic="";
+    }
+
+
     requirePwChange(_email,_pw){
         this.option.method='post';
         this.option.body={
@@ -191,17 +211,13 @@ class _Network {
         return this.fetchWrapper(this.link+'/user/show_user_preference',this.option)
     }
     
-    getRecommendImg(num){// 아직 안만들어짐. RecommendPic 에서 recommend사진 가져올 때 씀
+    getRecommendImg(num){// RecommendPic 에서 recommend사진 가져올 때 씀
         this.option.method='post';
-        /*
-        this.option.headers={
-            'Content-Type': 'application/json',
-        }
-        */
+
         this.option.body={
             id:this.state.ID,
-            //imageNum:num,
-            imageNum:"425",
+            imageNum:num,
+            //imageNum:"425",
         }
         
         return this.fetchWrapper(this.link+'/user/show_changed_image',this.option)
@@ -282,6 +298,7 @@ class _Network {
     }
     sendUserPicWithLight(img,_lightColor){//select style에서 변환할 사진 서버로 보낼 때 씀.
         console.log('보낼사진 img는 : '+img.uri);
+        console.log('보낼 색상은'+_lightColor)
         this.option.method='post';
         this.option.body={
             id:this.state.ID,
@@ -575,13 +592,13 @@ class _Network {
     VoteBoardImageWrapper(url,opt,img1,img2){// for write to send freeboard post to server   
         let fileBody1 = {
             name: 'imgFile',
-            filename: img1+".jpg",
+            filename: img1,//+".jpg",
             type: "image/jpeg",
             data: RNFetchBlob.wrap(img1)
         }
         let fileBody2 = {
             name: 'imgFile',
-            filename: img2+".jpg",
+            filename: img2,//+".jpg",
             type: "image/jpeg",
             data: RNFetchBlob.wrap(img2)
         }
@@ -640,7 +657,7 @@ class _Network {
     sendUserPicWithLightImageWrapper(url,opt,img){//조명 선택 시 이미지 전송
         let fileBody = {
             name: 'imgFile',
-            filename: img,//+".jpg",
+            filename: img+".jpg",
             type: "image/jpeg",
             data: RNFetchBlob.wrap(img)
         }

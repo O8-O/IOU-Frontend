@@ -35,8 +35,9 @@ export default class ColorBox extends React.Component{
             this.setState({selectedColor : this.state.boxColor1},
                 ()=>{this.props.updateSelectedColor(this.state.selectedColor)});
         }
-        this.props.updateSelectedColor(this.state.selectedColor);
+        //this.props.updateSelectedColor(this.state.selectedColor);
     }
+
     box2(){
         if(this.state.selectedBox == 2){
             this.setState({selectedBox : 0,borderColor2:'gray'});
@@ -50,7 +51,7 @@ export default class ColorBox extends React.Component{
             this.setState({selectedColor : this.state.boxColor2},
                 ()=>{this.props.updateSelectedColor(this.state.selectedColor)});
         }
-        this.props.updateSelectedColor(this.state.selectedColor);
+        //this.props.updateSelectedColor(this.state.selectedColor);
     }
     box3(){
         if(this.state.selectedBox == 3){

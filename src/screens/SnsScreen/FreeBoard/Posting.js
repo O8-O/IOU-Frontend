@@ -15,6 +15,8 @@ export default class Posting extends React.Component{
         try {
             console.log("posting에서 numtoimg1들어가기 전 picForDetail은 비어있어야 함")
             console.log(this.state.picForDetail)
+            console.log(' num To img 1 의 num  은 ')
+            console.log(num)
             const resp = await Network.numToImg(num);
             var uri = { uri: resp.url };
             var temp = this.state.picForDetail.concat(uri);
@@ -29,7 +31,8 @@ export default class Posting extends React.Component{
         try {
             console.log("posting에서 numtoimg2들어가기 전 picForDetail은 비어있어야 함")
             console.log(this.state.picForDetail)
-            console.log('NW> num To img 2 의 num 0 은 ')
+            console.log(' num To img 2 의 num  은 ')
+            console.log(num)
             const resp = await Network.numToImg(num[0]);
             var uri = { uri: resp.url };
             var temp = this.state.picForDetail.concat(uri);
@@ -50,7 +53,7 @@ export default class Posting extends React.Component{
         try {
             console.log("posting에서 numtoimg3들어가기 전 picForDetail은 비어있어야 함")
             console.log(this.state.picForDetail)
-            console.log('NW> num To img 3 의 num 0 은 ')
+            console.log('num To img 3 의 num 0 은 ')
             console.log(num)
             const resp = await Network.numToImg(num[0]);
             var uri = { uri: resp.url };
@@ -78,7 +81,8 @@ export default class Posting extends React.Component{
         try {
             console.log("posting에서 numtoimg4들어가기 전 picForDetail은 비어있어야 함")
             console.log(this.state.picForDetail)
-            console.log('NW> num To img 4 의 num 0 은 ')
+            console.log('num To img 4 의 num  은 ')
+            console.log(num)
             const resp = await Network.numToImg(num[0]);
             var uri = { uri: resp.url };
             var temp = this.state.picForDetail.concat(uri);
@@ -182,6 +186,8 @@ export default class Posting extends React.Component{
     }
 
     render(){      
+        console.log("posting render들어간다!")
+        console.log(this.state)
         return(
             <TouchableOpacity  
                 style={styles.container}

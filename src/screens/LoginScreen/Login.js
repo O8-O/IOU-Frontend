@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { View, Keyboard,Text, StyleSheet,TextInput, TouchableWithoutFeedback,TouchableOpacity ,Image, KeyboardAvoidingView, BackHandler} from "react-native";
 import CheckBox from './CheckBox';
 import Network from'../../network/Network';
-
+import {clearAll} from "../../components/SaveData";
 export default class Login extends React.Component{
     constructor(props) {
         super(props);
@@ -47,7 +47,9 @@ export default class Login extends React.Component{
                 console.log(error)
             })
     }
-
+    componentDidMount(){
+        clearAll()
+    }
     render(){
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
