@@ -57,8 +57,13 @@ export default class AdjustPic extends React.Component{
         }
     }
 
+    getId(){
+        this.setState({id : Network.getNetworkId()})    
+    }
+
     componentDidMount(){
         this.numToImg()
+        this.getId()
     }
 
     render(){
@@ -66,7 +71,7 @@ export default class AdjustPic extends React.Component{
             <View style={{flex:1}}> 
                 <View style={styles.board}>
                     <View style ={styles.middle1}>
-                        <Text style={{alignSelf:'center',fontSize:24, fontFamily:'NanumSquare_acB',marginBottom:5}}
+                        <Text style={{alignSelf:'center',fontSize:24, fontFamily:'NanumSquare_acB', marginTop:10,marginBottom:20}}
                         >변경된 세부 인테리어 결과
                         </Text>
                         <Text style={{alignSelf:'center',fontSize:14, marginBottom:2,fontFamily:'NanumSquare_acR',color:'#A9A9A9'}}>
@@ -169,7 +174,7 @@ const styles = StyleSheet.create({
         width:200,
         height:34,
         borderRadius: 5,
-        marginTop:40,
+        marginTop:25,
         alignSelf:'center',
         alignItems: 'center',
         justifyContent: 'center',

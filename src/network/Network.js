@@ -192,7 +192,8 @@ class _Network {
         */
         this.option.body={
             id:this.state.ID,
-            imageNum:num,
+            //imageNum:num,
+            imageNum:"425",
         }
         
         return this.fetchWrapper(this.link+'/user/show_changed_image',this.option)
@@ -224,13 +225,25 @@ class _Network {
     }
     */
 
-    getFurnitureImg(){ //세부인테리어 변경에서 추천 변경 가구 사진들 서버로부터 가져오기
-        this.option.method='post';
-        this.option.body={
-        }
-
-        return this.fetchWrapper(this.link+'/user/show_preference',this.option)
+    numToFurnitureImg(num){ // selectedPic 에서 사용. 이미지 num을 주소로.
+        return new Promise((res, rej) => {
+            console.log('numToFurnitureImg api에 붙는 num')
+            console.log(num)
+            //console.log(this.link+'/user/download/'+num)
+            fetch(this.link+'/user/downloadFurniture/'+num)
+            //.then((response) => response.text())  <-이거 get은 안써도 되는듯
+            .then(resp=>{
+                console.log("NW의 numToFurnitureImg 성공")
+                console.log(resp)
+                res(resp)
+            })
+            .catch(err=>{
+                console.log('Network의 numToFurnitureImg 함수에서 에러남')
+                console.log(err)
+            })
+        })
     }
+
 
     getComment(_postType,_postNum){ // freeboard 에서 사용. 게시물의 댓글 불러오기
         this.option.method='post';

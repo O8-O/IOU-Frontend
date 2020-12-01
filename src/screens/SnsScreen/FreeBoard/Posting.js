@@ -29,11 +29,13 @@ export default class Posting extends React.Component{
         try {
             console.log("posting에서 numtoimg2들어가기 전 picForDetail은 비어있어야 함")
             console.log(this.state.picForDetail)
+            console.log('NW> num To img 2 의 num 0 은 ')
             const resp = await Network.numToImg(num[0]);
             var uri = { uri: resp.url };
             var temp = this.state.picForDetail.concat(uri);
             this.setState({ picForDetail: temp });
 
+            console.log('NW> num To img 2 의 num 1 은 ')
             const resp_1 = await Network.numToImg(num[1]);
             var uri_1 = { uri: resp_1.url };
             var temp_1 = this.state.picForDetail.concat(uri_1);
@@ -48,18 +50,20 @@ export default class Posting extends React.Component{
         try {
             console.log("posting에서 numtoimg3들어가기 전 picForDetail은 비어있어야 함")
             console.log(this.state.picForDetail)
-            console.log('NW> num To img 3 의 num은 ')
+            console.log('NW> num To img 3 의 num 0 은 ')
             console.log(num)
             const resp = await Network.numToImg(num[0]);
             var uri = { uri: resp.url };
             var temp = this.state.picForDetail.concat(uri);
             this.setState({ picForDetail: temp });
 
+            console.log('NW> num To img 3 의 num 1 은 ')
             const resp_1 = await Network.numToImg(num[1]);
             var uri_1 = { uri: resp_1.url };
             var temp_1 = this.state.picForDetail.concat(uri_1);
             this.setState({ picForDetail: temp_1 });
 
+            console.log('NW> num To img 3 의 num 2 은 ')
             const resp_2 = await Network.numToImg(num[2]);
             var uri_2 = { uri: resp_2.url };
             var temp_2 = this.state.picForDetail.concat(uri_2);
@@ -74,21 +78,25 @@ export default class Posting extends React.Component{
         try {
             console.log("posting에서 numtoimg4들어가기 전 picForDetail은 비어있어야 함")
             console.log(this.state.picForDetail)
+            console.log('NW> num To img 4 의 num 0 은 ')
             const resp = await Network.numToImg(num[0]);
             var uri = { uri: resp.url };
             var temp = this.state.picForDetail.concat(uri);
             this.setState({ picForDetail: temp });
 
+            console.log('NW> num To img 4 의 num 1 은 ')
             const resp_1 = await Network.numToImg(num[1]);
             var uri_1 = { uri: resp_1.url };
             var temp_1 = this.state.picForDetail.concat(uri_1);
             this.setState({ picForDetail: temp_1 });
 
+            console.log('NW> num To img 4 의 num 2 은 ')
             const resp_2 = await Network.numToImg(num[2]);
             var uri_2 = { uri: resp_2.url };
             var temp_2 = this.state.picForDetail.concat(uri_2);
             this.setState({ picForDetail: temp_2 });
 
+            console.log('NW> num To img 4 의 num 3 은 ')
             const resp_3 = await Network.numToImg(num[3]);
             var uri_3 = { uri: resp_3.url };
             var temp_3 = this.state.picForDetail.concat(uri_3);

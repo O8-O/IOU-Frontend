@@ -44,7 +44,7 @@ class LoadItem extends React.Component{//imageList
         console.log('RecommendPic > press누름')
         console.log(this.state.image)
         this.props.selecteImg(this.state.image)
-        this.props.onPress()
+        //this.props.AdjustPicScreen()
     }
     componentDidMount(){
         this.numToImg()
@@ -165,9 +165,10 @@ export default class RecommendPic extends React.Component{
                                 image={item}
                                 selected = {false}
                                 selecteImg={(img)=>{this.setState({selectedImg:img},
-                                    ()=>console.log('setstate뒤 selecteImg값은 :'+this.state.selectedImg)
-                                    )}}
-                                onPress={()=>this.AdjustPicScreen()}
+                                    //()=>console.log('setstate뒤 selecteImg값은 :'+this.state.selectedImg),
+                                    ()=>this.AdjustPicScreen()
+                                    );}}
+                                //AdjustPicScreen={()=>this.AdjustPicScreen()}
                                 key={index}
                             />
                             }
